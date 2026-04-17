@@ -399,7 +399,7 @@
         </p>
 
         <div class="mb-5" id="wrap-d1">
-          <p class="font-semibold text-gray-800 mb-2" data-en="22. What is your age group?" data-ar="22. ما هي فئتك العمرية؟">22. What is your age group?</p>
+          <p class="font-semibold text-gray-800 mb-2" data-en="3. What is your age group?" data-ar="3. ما هي فئتك العمرية؟">3. What is your age group?</p>
           <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="18-24"> <span data-en="18–24 years" data-ar="18–24 سنة">18–24 years</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="25-34"> <span data-en="25–34 years" data-ar="25–34 سنة">25–34 years</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="35-44"> <span data-en="35–44 years" data-ar="35–44 سنة">35–44 years</span></label>
@@ -409,7 +409,7 @@
         </div>
 
         <div class="mb-5" id="wrap-d2">
-          <p class="font-semibold text-gray-800 mb-2" data-en="23. What is your gender?" data-ar="23. ما هو جنسك؟">23. What is your gender?</p>
+          <p class="font-semibold text-gray-800 mb-2" data-en="4. What is your gender?" data-ar="4. ما هو جنسك؟">4. What is your gender?</p>
           <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Female"> <span data-en="Female" data-ar="أنثى">Female</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Prefer not to say"> <span data-en="Prefer not to say" data-ar="أفضل عدم الإفصاح">Prefer not to say</span></label>
@@ -417,7 +417,7 @@
         </div>
 
         <div class="mb-5" id="wrap-d3">
-          <p class="font-semibold text-gray-800 mb-2" data-en="24. What is your highest level of education?" data-ar="24. ما هو أعلى مستوى تعليمي حصلت عليه؟">24. What is your highest level of education?</p>
+          <p class="font-semibold text-gray-800 mb-2" data-en="5. What is your highest level of education?" data-ar="5. ما هو أعلى مستوى تعليمي حصلت عليه؟">5. What is your highest level of education?</p>
           <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="High School"> <span data-en="High School or below" data-ar="ثانوية عامة أو أقل">High School or below</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Diploma"> <span data-en="Diploma / Associate Degree" data-ar="دبلوم">Diploma / Associate Degree</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Bachelor"> <span data-en="Bachelor's Degree" data-ar="بكالوريوس">Bachelor's Degree</span></label>
@@ -426,7 +426,7 @@
         </div>
 
         <div class="mb-5" id="wrap-d4">
-          <p class="font-semibold text-gray-800 mb-2" data-en="25. How many times have you visited Riyadh Season in total?" data-ar="25. كم مرة زرت موسم الرياض إجمالاً؟">25. How many times have you visited Riyadh Season in total?</p>
+          <p class="font-semibold text-gray-800 mb-2" data-en="6. How many times have you visited Riyadh Season in total?" data-ar="6. كم مرة زرت موسم الرياض إجمالاً؟">6. How many times have you visited Riyadh Season in total?</p>
           <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="1"> <span data-en="1 time" data-ar="مرة واحدة">1 time</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="2-3"> <span data-en="2–3 times" data-ar="2–3 مرات">2–3 times</span></label>
           <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="4-5"> <span data-en="4–5 times" data-ar="4–5 مرات">4–5 times</span></label>
@@ -504,29 +504,29 @@
 <script>
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const EQ_QUESTIONS = [
-  { id:'eq1',  num:3,  en:'I agree that the program and theme of Riyadh Season were highly attractive and engaging.', ar:'أوافق على أن برنامج وموضوع موسم الرياض كانا جذابَين للغاية.' },
-  { id:'eq2',  num:4,  en:'I agree that Riyadh Season offered a wide and diverse variety of activities suitable for different interests.', ar:'أوافق على أن موسم الرياض قدّم تشكيلة واسعة ومتنوعة من الأنشطة تناسب اهتمامات مختلفة.' },
-  { id:'eq3',  num:5,  en:'I agree that the staff members and volunteers were helpful, courteous, and professional.', ar:'أوافق على أن الموظفين والمتطوعين كانوا متعاونين ومهذبين ومحترفين.' },
-  { id:'eq4',  num:6,  en:'I agree that the facilities (e.g., seating, restrooms, rest areas) were clean and well-maintained.', ar:'أوافق على أن المرافق (كالمقاعد والحمامات ومناطق الراحة) كانت نظيفة وصالحة للاستخدام.' },
-  { id:'eq5',  num:7,  en:'I agree that the safety and security measures at the event were visible and effective.', ar:'أوافق على أن إجراءات الأمن والسلامة في الفعالية كانت واضحة وفعّالة.' },
-  { id:'eq6',  num:8,  en:'I agree that the event zones and venues were easily accessible via available transportation.', ar:'أوافق على أن مواقع الفعاليات والمناطق المخصصة كانت يسيرة الوصول عبر وسائل النقل المتاحة.' },
-  { id:'eq7',  num:9,  en:'I agree that the crowd management procedures were well-organized and reduced congestion.', ar:'أوافق على أن إجراءات إدارة الحشود كانت منظمة وأسهمت في تخفيف الازدحام.' },
-  { id:'eq8',  num:10, en:'I agree that information regarding schedules, maps, and events was readily available and clear.', ar:'أوافق على أن المعلومات المتعلقة بالجداول والخرائط والفعاليات كانت متاحة وواضحة.' },
-  { id:'eq9',  num:11, en:'I agree that the overall entertainment quality met international standards of excellence.', ar:'أوافق على أن جودة الترفيه الإجمالية استوفت المعايير الدولية للتميز.' },
-  { id:'eq10', num:12, en:'I agree that the digital platforms (app/website) provided accurate and timely information.', ar:'أوافق على أن المنصات الرقمية (التطبيق/الموقع الإلكتروني) قدّمت معلومات دقيقة وفي الوقت المناسب.' },
-  { id:'eq11', num:13, en:'I agree that the ticket booking and entry processes were efficient and user-friendly.', ar:'أوافق على أن عمليات حجز التذاكر والدخول كانت فعّالة وسهلة الاستخدام.' },
+  { id:'eq1',  num:7,  en:'I agree that the program and theme of Riyadh Season were highly attractive and engaging.', ar:'أوافق على أن برنامج وموضوع موسم الرياض كانا جذابَين للغاية.' },
+  { id:'eq2',  num:8,  en:'I agree that Riyadh Season offered a wide and diverse variety of activities suitable for different interests.', ar:'أوافق على أن موسم الرياض قدّم تشكيلة واسعة ومتنوعة من الأنشطة تناسب اهتمامات مختلفة.' },
+  { id:'eq3',  num:9,  en:'I agree that the staff members and volunteers were helpful, courteous, and professional.', ar:'أوافق على أن الموظفين والمتطوعين كانوا متعاونين ومهذبين ومحترفين.' },
+  { id:'eq4',  num:10, en:'I agree that the facilities (e.g., seating, restrooms, rest areas) were clean and well-maintained.', ar:'أوافق على أن المرافق (كالمقاعد والحمامات ومناطق الراحة) كانت نظيفة وصالحة للاستخدام.' },
+  { id:'eq5',  num:11, en:'I agree that the safety and security measures at the event were visible and effective.', ar:'أوافق على أن إجراءات الأمن والسلامة في الفعالية كانت واضحة وفعّالة.' },
+  { id:'eq6',  num:12, en:'I agree that the event zones and venues were easily accessible via available transportation.', ar:'أوافق على أن مواقع الفعاليات والمناطق المخصصة كانت يسيرة الوصول عبر وسائل النقل المتاحة.' },
+  { id:'eq7',  num:13, en:'I agree that the crowd management procedures were well-organized and reduced congestion.', ar:'أوافق على أن إجراءات إدارة الحشود كانت منظمة وأسهمت في تخفيف الازدحام.' },
+  { id:'eq8',  num:14, en:'I agree that information regarding schedules, maps, and events was readily available and clear.', ar:'أوافق على أن المعلومات المتعلقة بالجداول والخرائط والفعاليات كانت متاحة وواضحة.' },
+  { id:'eq9',  num:15, en:'I agree that the overall entertainment quality met international standards of excellence.', ar:'أوافق على أن جودة الترفيه الإجمالية استوفت المعايير الدولية للتميز.' },
+  { id:'eq10', num:16, en:'I agree that the digital platforms (app/website) provided accurate and timely information.', ar:'أوافق على أن المنصات الرقمية (التطبيق/الموقع الإلكتروني) قدّمت معلومات دقيقة وفي الوقت المناسب.' },
+  { id:'eq11', num:17, en:'I agree that the ticket booking and entry processes were efficient and user-friendly.', ar:'أوافق على أن عمليات حجز التذاكر والدخول كانت فعّالة وسهلة الاستخدام.' },
 ];
 const VS_QUESTIONS = [
-  { id:'vs1', num:14, en:'I agree that I am completely satisfied with my overall experience at Riyadh Season.', ar:'أوافق على أنني راضٍ تماماً عن تجربتي الإجمالية في موسم الرياض.' },
-  { id:'vs2', num:15, en:'I agree that Riyadh Season either met or exceeded my initial expectations.', ar:'أوافق على أن موسم الرياض قد لبّى توقعاتي الأولية أو تجاوزها.' },
-  { id:'vs3', num:16, en:'I agree that the quality of the experience justified the time and money spent.', ar:'أوافق على أن جودة التجربة كانت تستحق الوقت والمال المُنفقَين.' },
-  { id:'vs4', num:17, en:'I agree that I had a delightful and enjoyable time during my visit.', ar:'أوافق على أنني قضيت وقتاً ممتعاً وبهيجاً خلال زيارتي.' },
+  { id:'vs1', num:18, en:'I agree that I am completely satisfied with my overall experience at Riyadh Season.', ar:'أوافق على أنني راضٍ تماماً عن تجربتي الإجمالية في موسم الرياض.' },
+  { id:'vs2', num:19, en:'I agree that Riyadh Season either met or exceeded my initial expectations.', ar:'أوافق على أن موسم الرياض قد لبّى توقعاتي الأولية أو تجاوزها.' },
+  { id:'vs3', num:20, en:'I agree that the quality of the experience justified the time and money spent.', ar:'أوافق على أن جودة التجربة كانت تستحق الوقت والمال المُنفقَين.' },
+  { id:'vs4', num:21, en:'I agree that I had a delightful and enjoyable time during my visit.', ar:'أوافق على أنني قضيت وقتاً ممتعاً وبهيجاً خلال زيارتي.' },
 ];
 const DL_QUESTIONS = [
-  { id:'dl1', num:18, en:'I agree that I have a strong intention to visit Riyadh Season again in future editions.', ar:'أوافق على أن لديّ نية قوية لزيارة موسم الرياض مجدداً في الدورات القادمة.' },
-  { id:'dl2', num:19, en:'I agree that I would recommend Riyadh Season as a must-visit event to friends and relatives.', ar:'أوافق على أنني سأوصي بموسم الرياض كفعالية لا تُفوَّت لأصدقائي وأقاربي.' },
-  { id:'dl3', num:20, en:'I agree that I will share positive feedback about my visit with others (word of mouth).', ar:'أوافق على أنني سأشارك الآخرين تقييماً إيجابياً عن زيارتي (الكلام الشفهي).' },
-  { id:'dl4', num:21, en:'I agree that Riyadh Season has increased my interest in visiting other attractions in Riyadh.', ar:'أوافق على أن موسم الرياض قد زاد من اهتمامي بزيارة المعالم والمناطق الأخرى في الرياض.' },
+  { id:'dl1', num:22, en:'I agree that I have a strong intention to visit Riyadh Season again in future editions.', ar:'أوافق على أن لديّ نية قوية لزيارة موسم الرياض مجدداً في الدورات القادمة.' },
+  { id:'dl2', num:23, en:'I agree that I would recommend Riyadh Season as a must-visit event to friends and relatives.', ar:'أوافق على أنني سأوصي بموسم الرياض كفعالية لا تُفوَّت لأصدقائي وأقاربي.' },
+  { id:'dl3', num:24, en:'I agree that I will share positive feedback about my visit with others (word of mouth).', ar:'أوافق على أنني سأشارك الآخرين تقييماً إيجابياً عن زيارتي (الكلام الشفهي).' },
+  { id:'dl4', num:25, en:'I agree that Riyadh Season has increased my interest in visiting other attractions in Riyadh.', ar:'أوافق على أن موسم الرياض قد زاد من اهتمامي بزيارة المعالم والمناطق الأخرى في الرياض.' },
 ];
 
 const LIKERT_LABELS = {
@@ -756,9 +756,9 @@ function exportToExcel() {
   const all = loadResponses();
   if (!all.length) { alert('No responses to export yet.'); return; }
   const headers = ['Timestamp','Age','Gender','Education','Visit Count',
-    ...EQ_QUESTIONS.map((q,i)=>`EQ${i+1}`),
-    ...VS_QUESTIONS.map((q,i)=>`VS${i+1}`),
-    ...DL_QUESTIONS.map((q,i)=>`DL${i+1}`)];
+    ...EQ_QUESTIONS.map((q,i)=>`Q${q.num}`),
+    ...VS_QUESTIONS.map((q,i)=>`Q${q.num}`),
+    ...DL_QUESTIONS.map((q,i)=>`Q${q.num}`)];
   const rows = all.map(r => [
     r.timestamp, r.d1, r.d2, r.d3, r.d4,
     ...EQ_QUESTIONS.map(q=>r[q.id]||''),
@@ -780,9 +780,9 @@ function exportToExcel() {
     ['Total Responses', all.length],
     [],
     ['Variable','Items','Average Score'],
-    ['Event Quality (EQ)', `EQ1–EQ${EQ_QUESTIONS.length}`, calcMean(EQ_QUESTIONS.map(q=>q.id))],
-    ['Visitor Satisfaction (VS)', `VS1–VS${VS_QUESTIONS.length}`, calcMean(VS_QUESTIONS.map(q=>q.id))],
-    ['Destination Loyalty (DL)', `DL1–DL${DL_QUESTIONS.length}`, calcMean(DL_QUESTIONS.map(q=>q.id))],
+    ['Event Quality (EQ)', `Q${EQ_QUESTIONS[0].num}–Q${EQ_QUESTIONS[EQ_QUESTIONS.length-1].num}`, calcMean(EQ_QUESTIONS.map(q=>q.id))],
+    ['Visitor Satisfaction (VS)', `Q${VS_QUESTIONS[0].num}–Q${VS_QUESTIONS[VS_QUESTIONS.length-1].num}`, calcMean(VS_QUESTIONS.map(q=>q.id))],
+    ['Destination Loyalty (DL)', `Q${DL_QUESTIONS[0].num}–Q${DL_QUESTIONS[DL_QUESTIONS.length-1].num}`, calcMean(DL_QUESTIONS.map(q=>q.id))],
   ];
   const ws2 = XLSX.utils.aoa_to_sheet(summary);
   ws2['!cols'] = [{wch:30},{wch:40},{wch:16}];
