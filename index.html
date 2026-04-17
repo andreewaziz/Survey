@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riyadh Season Survey | استبيان موسم الرياض</title>
+  <meta name="description" content="Academic survey on the impact of Riyadh Season event quality on visitor satisfaction and destination loyalty.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --primary: #0d4f2e;
+      --primary-light: #1a7a47;
+      --accent: #c9a84c;
+      --bg: #f5f7f5;
+      --card: #ffffff;
+      --text: #1c1c1c;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+    }
+    html[dir="rtl"] body { font-family: 'Amiri', serif; }
+    html[dir="ltr"] body { font-family: 'Inter', sans-serif; }
+    *, ::before, ::after { box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; }
+    #progress-bar { transition: width 0.4s ease; }
+    .section-card {
+      background: var(--card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 16px rgba(13,79,46,0.08);
+      border-top: 4px solid var(--primary);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .likert-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .likert-btn {
+      flex: 1; min-width: 80px;
+      padding: 0.45rem 0.25rem;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+      background: #fff;
+      user-select: none;
+    }
+    .likert-btn:hover { border-color: var(--primary-light); color: var(--primary); background: #eaf5ee; }
+    .likert-btn.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .demo-option {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .demo-option:hover { border-color: var(--primary-light); background: #eaf5ee; }
+    .demo-option.selected { border-color: var(--primary); background: #eaf5ee; }
+    .demo-option input { accent-color: var(--primary); }
+    #lang-toggle {
+      position: fixed; top: 1rem; right: 1rem; z-index: 100;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 2rem;
+      padding: 0.5rem 1.25rem;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      transition: background 0.2s;
+    }
+    #lang-toggle:hover { background: var(--primary-light); }
+    #admin-toggle {
+      position: fixed; top: 1rem; left: 1rem; z-index: 100;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 2rem;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      transition: background 0.2s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    #admin-toggle:hover { background: #a07820; }
+    #dashboard {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.55);
+      align-items: center; justify-content: center;
+    }
+    #dashboard.open { display: flex; }
+    #dashboard-panel {
+      background: #fff;
+      border-radius: 1.2rem;
+      padding: 2rem;
+      width: 90%; max-width: 580px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    #close-dashboard {
+      position: absolute; top: 1rem; right: 1rem;
+      background: #f3f4f6; border: none; border-radius: 50%;
+      width: 2rem; height: 2rem;
+      font-size: 1.1rem; cursor: pointer; color: #374151;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #close-dashboard:hover { background: #e5e7eb; }
+    #export-btn {
+      background: #16a34a; color: #fff; border: none;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(22,163,74,0.25);
+      transition: background 0.2s, transform 0.1s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    #export-btn:hover { background: #15803d; transform: translateY(-1px); }
+    #clear-btn {
+      background: #dc2626; color: #fff; border: none;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    #clear-btn:hover { background: #b91c1c; }
+    #submit-btn {
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 0.75rem;
+      padding: 0.9rem 2.5rem;
+      font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 14px rgba(13,79,46,0.25);
+    }
+    #submit-btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+    #thank-you { display: none; }
+    #thank-you.show { display: flex; }
+    .error-msg { color: #dc2626; font-size: 0.78rem; margin-top: 0.25rem; display: none; }
+    .error-msg.show { display: block; }
+    html[dir="rtl"] #lang-toggle { right: auto; left: 4.5rem; }
+    html[dir="rtl"] #admin-toggle { left: auto; right: 4.5rem; }
+    html[dir="rtl"] .likert-row { flex-direction: row-reverse; }
+    html[dir="rtl"] .demo-option { flex-direction: row-reverse; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeInUp 0.5s ease both; }
+    .hero {
+      background: linear-gradient(135deg, #0d4f2e 0%, #1a7a47 55%, #c9a84c 100%);
+      color: #fff; border-radius: 1rem;
+      padding: 2.5rem 2rem; margin-bottom: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=1200&q=60') center/cover no-repeat;
+      opacity: 0.13;
+    }
+    .hero > * { position: relative; }
+    .section-badge {
+      display: inline-block;
+      background: var(--primary); color: #fff;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.75rem;
+      border-radius: 2rem; margin-bottom: 0.75rem;
+      text-transform: uppercase;
+    }
+    .sticky-progress {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(245,247,245,0.95);
+      backdrop-filter: blur(6px);
+      padding: 0.6rem 0; margin-bottom: 1.5rem;
+    }
+    .counter-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: linear-gradient(135deg, #0d4f2e, #1a7a47);
+      color: #fff; border-radius: 2rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem; font-weight: 700;
+      box-shadow: 0 2px 10px rgba(13,79,46,0.2);
+    }
+    .resp-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .resp-table th { background: #0d4f2e; color: #fff; padding: 0.4rem 0.6rem; text-align: left; }
+    .resp-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #e5e7eb; }
+    .resp-table tr:nth-child(even) td { background: #f9fafb; }
+    .screening-stop {
+      display: none;
+      background: #fef2f2; border: 2px solid #fca5a5;
+      border-radius: 0.75rem; padding: 1rem 1.25rem;
+      color: #b91c1c; font-weight: 600; font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    .max-w-3xl { max-width: 48rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-5 { margin-bottom: 1.25rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mb-10 { margin-bottom: 2.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .ml-1 { margin-left: 0.25rem; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    @media (min-width: 768px) { .md-text-3xl { font-size: 1.875rem; line-height: 2.25rem; } }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-3 { gap: 0.75rem; }
+    .grid { display: grid; }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .col-span-2 { grid-column: span 2 / span 2; }
+    .w-full { width: 100%; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .bg-gray-200 { background-color: #e5e7eb; }
+    .h-2\.5 { height: 0.625rem; }
+    .opacity-75 { opacity: 0.75; }
+    .opacity-90 { opacity: 0.9; }
+    .leading-snug { line-height: 1.375; }
+    .leading-relaxed { line-height: 1.625; }
+    .text-white { color: #fff; }
+    .text-gray-500 { color: #6b7280; }
+    .text-gray-700 { color: #374151; }
+    .text-gray-800 { color: #1f2937; }
+    .text-blue-700 { color: #1d4ed8; }
+    .text-green-700 { color: #15803d; }
+    .text-yellow-700 { color: #a16207; }
+    .bg-green-50 { background-color: #f0fdf4; }
+    .bg-yellow-50 { background-color: #fefce8; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .text-6xl { font-size: 3.75rem; line-height: 1; }
+    .block { display: block; }
+    p { margin: 0; }
+    h1, h2 { margin: 0; }
+  </style>
+</head>
+<body>
+
+  <button id="lang-toggle" onclick="toggleLang()">عربي 🌐</button>
+
+  <button id="admin-toggle" onclick="openDashboard()">
+    📊 <span id="admin-btn-label">Responses</span>
+    <span id="response-count-badge" style="background:#fff;color:#a16207;border-radius:9999px;padding:0.125rem 0.5rem;font-size:0.75rem;font-weight:700;margin-left:0.25rem;">0</span>
+  </button>
+
+  <!-- DASHBOARD MODAL -->
+  <div id="dashboard" role="dialog" aria-modal="true">
+    <div id="dashboard-panel">
+      <button id="close-dashboard" onclick="closeDashboard()">✕</button>
+      <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;" id="dash-title">📊 Survey Responses Dashboard</h2>
+      <p class="text-sm text-gray-500 mb-4" id="dash-subtitle">All responses are saved in this browser.</p>
+      <div class="flex items-center gap-3 mb-5">
+        <div class="counter-badge">
+          <span>📝</span>
+          <span id="dash-count">0</span>
+          <span id="dash-count-label">Responses Collected</span>
+        </div>
+      </div>
+      <div id="stats-grid" class="grid grid-cols-2 gap-3 mb-5">
+        <p class="text-sm text-gray-500 col-span-2">No responses yet. Share the survey link to start collecting data.</p>
+      </div>
+      <div class="flex gap-3 flex-wrap mb-5">
+        <button id="export-btn" onclick="exportToExcel()">📥 <span id="export-label">Export to Excel (.xlsx)</span></button>
+        <button id="clear-btn" onclick="clearResponses()">🗑️ <span id="clear-label">Clear All</span></button>
+      </div>
+      <div id="recent-responses"></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-3xl mx-auto px-4 py-8">
+
+    <!-- Hero -->
+    <div class="hero fade-in">
+      <div class="section-badge" data-en="Academic Research Survey" data-ar="استبيان بحث أكاديمي">Academic Research Survey</div>
+      <h1 class="text-2xl md-text-3xl font-bold mb-2 leading-snug"
+          data-en="The Impact of Riyadh Season Event Quality on Visitor Satisfaction and Destination Loyalty"
+          data-ar="أثر جودة فعاليات موسم الرياض على رضا الزوار والولاء للوجهة السياحية">
+        The Impact of Riyadh Season Event Quality on Visitor Satisfaction and Destination Loyalty
+      </h1>
+      <p class="text-sm opacity-75 mt-3"
+         data-en="Academic Research Survey · 5-Point Likert Scale"
+         data-ar="استبيان بحثي أكاديمي · مقياس ليكرت الخماسي">
+        Academic Research Survey · 5-Point Likert Scale
+      </p>
+    </div>
+
+    <!-- Sticky Progress -->
+    <div class="sticky-progress fade-in">
+      <div class="flex justify-between items-center mb-1 px-1" style="padding-left:0.25rem;padding-right:0.25rem;">
+        <span class="text-xs font-semibold text-gray-500" id="progress-label" data-en="Survey Progress" data-ar="تقدم الاستبيان">Survey Progress</span>
+        <span class="text-xs font-bold" style="color:#1a7a47;" id="progress-pct">0%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2\.5">
+        <div id="progress-bar" class="h-2\.5 rounded-full" style="width:0%;background:linear-gradient(90deg,#0d4f2e,#c9a84c);height:0.625rem;border-radius:9999px;"></div>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <div class="section-card fade-in">
+      <h2 class="text-lg font-bold mb-3" style="color:#0d4f2e;"
+          data-en="Participant Information" data-ar="معلومات للمشارك">Participant Information</h2>
+      <p class="text-sm text-gray-700 leading-relaxed"
+         data-en="Dear Participant,&lt;br/&gt;&lt;br/&gt;You are invited to take part in this academic research survey. The study aims to examine the impact of Riyadh Season event quality on visitor satisfaction and destination loyalty.&lt;br/&gt;&lt;br/&gt;Your participation is entirely voluntary, and all responses will be kept strictly confidential and used solely for academic research purposes. The survey takes approximately 10 minutes to complete.&lt;br/&gt;&lt;br/&gt;Thank you sincerely for your time and cooperation."
+         data-ar="عزيزي المشارك،&lt;br/&gt;&lt;br/&gt;يسعدنا دعوتكم للمشاركة في هذا الاستبيان الأكاديمي. يهدف البحث إلى دراسة أثر جودة فعاليات موسم الرياض على رضا الزوار وولائهم للوجهة السياحية.&lt;br/&gt;&lt;br/&gt;مشاركتكم طوعية تاماً، وستُعامَل جميع إجاباتكم بسرية مطلقة ولن تُستخدم إلا لأغراض البحث العلمي. لا يستغرق ملء الاستبيان أكثر من 10 دقائق.&lt;br/&gt;&lt;br/&gt;شكراً جزيلاً على وقتكم الثمين وتعاونكم الكريم.">
+        Dear Participant,<br><br>You are invited to take part in this academic research survey. The study aims to examine the impact of Riyadh Season event quality on visitor satisfaction and destination loyalty.<br><br>Your participation is entirely voluntary, and all responses will be kept strictly confidential and used solely for academic research purposes. The survey takes approximately 10 minutes to complete.<br><br>Thank you sincerely for your time and cooperation.
+      </p>
+    </div>
+
+    <form id="survey-form" novalidate>
+
+      <!-- PART 1: SCREENING -->
+      <div class="section-card fade-in">
+        <div class="section-badge" data-en="Part 1" data-ar="الجزء الأول">Part 1</div>
+        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
+            data-en="Screening Questions" data-ar="أسئلة الفرز">Screening Questions</h2>
+        <p class="text-sm text-gray-500 mb-5"
+           data-en="Please select the appropriate option." data-ar="يرجى اختيار الخيار المناسب.">Please select the appropriate option.</p>
+
+        <!-- Q1 -->
+        <div class="mb-5" id="wrap-sc1">
+          <p class="font-semibold text-gray-800 mb-2"
+             data-en="1. Have you attended Riyadh Season at least once in the past two years?"
+             data-ar="1. هل حضرت موسم الرياض مرة واحدة على الأقل خلال العامين الماضيين؟">
+            1. Have you attended Riyadh Season at least once in the past two years?
+          </p>
+          <label class="demo-option" onclick="selectScreen(this,'sc1','yes')">
+            <input type="radio" name="sc1" value="yes">
+            <span data-en="Yes" data-ar="نعم">Yes</span>
+          </label>
+          <label class="demo-option" onclick="selectScreen(this,'sc1','no')">
+            <input type="radio" name="sc1" value="no">
+            <span data-en="No (If No, please stop here)" data-ar="لا (إذا كانت الإجابة لا، يرجى التوقف هنا)">No (If No, please stop here)</span>
+          </label>
+          <div class="screening-stop" id="stop-sc1"
+               data-en="⚠️ Thank you for your time. This survey is only for those who have attended Riyadh Season in the past two years."
+               data-ar="⚠️ شكراً لوقتك. هذا الاستبيان مخصص لمن حضر موسم الرياض خلال العامين الماضيين فقط.">
+            ⚠️ Thank you for your time. This survey is only for those who have attended Riyadh Season in the past two years.
+          </div>
+          <p class="error-msg" id="err-sc1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="mb-5" id="wrap-sc2">
+          <p class="font-semibold text-gray-800 mb-2"
+             data-en="2. Is your age 18 years or older?"
+             data-ar="2. هل عمرك 18 سنة أو أكثر؟">
+            2. Is your age 18 years or older?
+          </p>
+          <label class="demo-option" onclick="selectScreen(this,'sc2','yes')">
+            <input type="radio" name="sc2" value="yes">
+            <span data-en="Yes" data-ar="نعم">Yes</span>
+          </label>
+          <label class="demo-option" onclick="selectScreen(this,'sc2','no')">
+            <input type="radio" name="sc2" value="no">
+            <span data-en="No (If No, please stop here)" data-ar="لا (إذا كانت الإجابة لا، يرجى التوقف هنا)">No (If No, please stop here)</span>
+          </label>
+          <div class="screening-stop" id="stop-sc2"
+               data-en="⚠️ Thank you for your time. This survey is only for participants aged 18 years or older."
+               data-ar="⚠️ شكراً لوقتك. هذا الاستبيان مخصص للمشاركين الذين تبلغ أعمارهم 18 عاماً أو أكثر.">
+            ⚠️ Thank you for your time. This survey is only for participants aged 18 years or older.
+          </div>
+          <p class="error-msg" id="err-sc2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+      </div>
+
+      <!-- PART 2: EVENT QUALITY -->
+      <div class="section-card fade-in">
+        <div class="section-badge" data-en="Part 2" data-ar="الجزء الثاني">Part 2</div>
+        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
+            data-en="Event Quality" data-ar="جودة الفعالية">Event Quality</h2>
+        <p class="text-sm text-gray-500 mb-5"
+           data-en="Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree)."
+           data-ar="يرجى تحديد مستوى موافقتك (1 = أختلف بشدة، 5 = أوافق بشدة).">
+          Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree).
+        </p>
+
+        <div id="eq-questions"></div>
+      </div>
+
+      <!-- PART 3: VISITOR SATISFACTION -->
+      <div class="section-card fade-in">
+        <div class="section-badge" data-en="Part 3" data-ar="الجزء الثالث">Part 3</div>
+        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
+            data-en="Visitor Satisfaction" data-ar="رضا الزوار">Visitor Satisfaction</h2>
+        <p class="text-sm text-gray-500 mb-5"
+           data-en="Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree)."
+           data-ar="يرجى تحديد مستوى موافقتك (1 = أختلف بشدة، 5 = أوافق بشدة).">
+          Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree).
+        </p>
+        <div id="vs-questions"></div>
+      </div>
+
+      <!-- PART 4: DESTINATION LOYALTY -->
+      <div class="section-card fade-in">
+        <div class="section-badge" data-en="Part 4" data-ar="الجزء الرابع">Part 4</div>
+        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
+            data-en="Destination Loyalty" data-ar="الولاء للوجهة السياحية">Destination Loyalty</h2>
+        <p class="text-sm text-gray-500 mb-5"
+           data-en="Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree)."
+           data-ar="يرجى تحديد مستوى موافقتك (1 = أختلف بشدة، 5 = أوافق بشدة).">
+          Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree).
+        </p>
+        <div id="dl-questions"></div>
+      </div>
+
+      <!-- PART 5: DEMOGRAPHICS -->
+      <div class="section-card fade-in">
+        <div class="section-badge" data-en="Part 5" data-ar="الجزء الخامس">Part 5</div>
+        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
+            data-en="Demographic Profile" data-ar="البيانات الشخصية">Demographic Profile</h2>
+        <p class="text-sm text-gray-500 mb-5"
+           data-en="Please select the most appropriate option."
+           data-ar="يرجى اختيار الخيار الأنسب.">
+          Please select the most appropriate option.
+        </p>
+
+        <!-- Age -->
+        <div class="mb-5" id="wrap-d1">
+          <p class="font-semibold text-gray-800 mb-2" data-en="22. What is your age group?" data-ar="22. ما هي فئتك العمرية؟">22. What is your age group?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="18-24"> <span data-en="18–24 years" data-ar="18–24 سنة">18–24 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="25-34"> <span data-en="25–34 years" data-ar="25–34 سنة">25–34 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="35-44"> <span data-en="35–44 years" data-ar="35–44 سنة">35–44 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="45-54"> <span data-en="45–54 years" data-ar="45–54 سنة">45–54 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="55+"> <span data-en="55 years or older" data-ar="55 سنة فأكثر">55 years or older</span></label>
+          <p class="error-msg" id="err-d1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <!-- Gender -->
+        <div class="mb-5" id="wrap-d2">
+          <p class="font-semibold text-gray-800 mb-2" data-en="23. What is your gender?" data-ar="23. ما هو جنسك؟">23. What is your gender?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Female"> <span data-en="Female" data-ar="أنثى">Female</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Prefer not to say"> <span data-en="Prefer not to say" data-ar="أفضل عدم الإفصاح">Prefer not to say</span></label>
+          <p class="error-msg" id="err-d2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <!-- Education -->
+        <div class="mb-5" id="wrap-d3">
+          <p class="font-semibold text-gray-800 mb-2" data-en="24. What is your highest level of education?" data-ar="24. ما هو أعلى مستوى تعليمي حصلت عليه؟">24. What is your highest level of education?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="High School"> <span data-en="High School or below" data-ar="ثانوية عامة أو أقل">High School or below</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Diploma"> <span data-en="Diploma / Associate Degree" data-ar="دبلوم">Diploma / Associate Degree</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Bachelor"> <span data-en="Bachelor's Degree" data-ar="بكالوريوس">Bachelor's Degree</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Masters/PhD"> <span data-en="Master's or Doctorate Degree (PhD)" data-ar="ماجستير أو دكتوراه">Master's or Doctorate Degree (PhD)</span></label>
+          <p class="error-msg" id="err-d3" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <!-- Visit Count -->
+        <div class="mb-5" id="wrap-d4">
+          <p class="font-semibold text-gray-800 mb-2" data-en="25. How many times have you visited Riyadh Season in total?" data-ar="25. كم مرة زرت موسم الرياض إجمالاً؟">25. How many times have you visited Riyadh Season in total?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="1"> <span data-en="1 time" data-ar="مرة واحدة">1 time</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="2-3"> <span data-en="2–3 times" data-ar="2–3 مرات">2–3 times</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="4-5"> <span data-en="4–5 times" data-ar="4–5 مرات">4–5 times</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="5+"> <span data-en="More than 5 times" data-ar="أكثر من 5 مرات">More than 5 times</span></label>
+          <p class="error-msg" id="err-d4" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center mb-10">
+        <button type="button" id="submit-btn" onclick="submitSurvey()"
+                data-en="Submit Survey" data-ar="إرسال الاستبيان">Submit Survey</button>
+        <p class="text-xs text-gray-500 mt-3"
+           data-en="All responses are anonymous and used solely for research purposes."
+           data-ar="جميع الإجابات مجهولة الهوية وتُستخدم لأغراض بحثية فقط.">
+          All responses are anonymous and used solely for research purposes.
+        </p>
+      </div>
+
+    </form>
+
+    <!-- Thank You -->
+    <div id="thank-you" class="flex-col items-center text-center py-16" style="display:none;">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-2xl font-bold mb-3" style="color:#0d4f2e;"
+          data-en="Thank You!" data-ar="شكراً لك!">Thank You!</h2>
+      <p class="text-gray-700 mb-5"
+         data-en="Your response has been recorded. We appreciate your participation in this research."
+         data-ar="تم تسجيل إجابتك. نشكرك على مشاركتك في هذا البحث.">
+        Your response has been recorded. We appreciate your participation in this research.
+      </p>
+      <button onclick="resetForm()" style="background:var(--primary);color:#fff;border:none;border-radius:0.75rem;padding:0.75rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;"
+              data-en="Submit Another Response" data-ar="تقديم إجابة أخرى">
+        Submit Another Response
+      </button>
+    </div>
+
+  </div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const EQ_QUESTIONS = [
+  { id:'eq1',  num:3,  en:'I agree that the program and theme of Riyadh Season were highly attractive and engaging.', ar:'أوافق على أن برنامج وموضوع موسم الرياض كانا جذابَين للغاية.' },
+  { id:'eq2',  num:4,  en:'I agree that Riyadh Season offered a wide and diverse variety of activities suitable for different interests.', ar:'أوافق على أن موسم الرياض قدّم تشكيلة واسعة ومتنوعة من الأنشطة تناسب اهتمامات مختلفة.' },
+  { id:'eq3',  num:5,  en:'I agree that the staff members and volunteers were helpful, courteous, and professional.', ar:'أوافق على أن الموظفين والمتطوعين كانوا متعاونين ومهذبين ومحترفين.' },
+  { id:'eq4',  num:6,  en:'I agree that the facilities (e.g., seating, restrooms, rest areas) were clean and well-maintained.', ar:'أوافق على أن المرافق (كالمقاعد والحمامات ومناطق الراحة) كانت نظيفة وصالحة للاستخدام.' },
+  { id:'eq5',  num:7,  en:'I agree that the safety and security measures at the event were visible and effective.', ar:'أوافق على أن إجراءات الأمن والسلامة في الفعالية كانت واضحة وفعّالة.' },
+  { id:'eq6',  num:8,  en:'I agree that the event zones and venues were easily accessible via available transportation.', ar:'أوافق على أن مواقع الفعاليات والمناطق المخصصة كانت يسيرة الوصول عبر وسائل النقل المتاحة.' },
+  { id:'eq7',  num:9,  en:'I agree that the crowd management procedures were well-organized and reduced congestion.', ar:'أوافق على أن إجراءات إدارة الحشود كانت منظمة وأسهمت في تخفيف الازدحام.' },
+  { id:'eq8',  num:10, en:'I agree that information regarding schedules, maps, and events was readily available and clear.', ar:'أوافق على أن المعلومات المتعلقة بالجداول والخرائط والفعاليات كانت متاحة وواضحة.' },
+  { id:'eq9',  num:11, en:'I agree that the overall entertainment quality met international standards of excellence.', ar:'أوافق على أن جودة الترفيه الإجمالية استوفت المعايير الدولية للتميز.' },
+  { id:'eq10', num:12, en:'I agree that the digital platforms (app/website) provided accurate and timely information.', ar:'أوافق على أن المنصات الرقمية (التطبيق/الموقع الإلكتروني) قدّمت معلومات دقيقة وفي الوقت المناسب.' },
+  { id:'eq11', num:13, en:'I agree that the ticket booking and entry processes were efficient and user-friendly.', ar:'أوافق على أن عمليات حجز التذاكر والدخول كانت فعّالة وسهلة الاستخدام.' },
+];
+const VS_QUESTIONS = [
+  { id:'vs1', num:14, en:'I agree that I am completely satisfied with my overall experience at Riyadh Season.', ar:'أوافق على أنني راضٍ تماماً عن تجربتي الإجمالية في موسم الرياض.' },
+  { id:'vs2', num:15, en:'I agree that Riyadh Season either met or exceeded my initial expectations.', ar:'أوافق على أن موسم الرياض قد لبّى توقعاتي الأولية أو تجاوزها.' },
+  { id:'vs3', num:16, en:'I agree that the quality of the experience justified the time and money spent.', ar:'أوافق على أن جودة التجربة كانت تستحق الوقت والمال المُنفقَين.' },
+  { id:'vs4', num:17, en:'I agree that I had a delightful and enjoyable time during my visit.', ar:'أوافق على أنني قضيت وقتاً ممتعاً وبهيجاً خلال زيارتي.' },
+];
+const DL_QUESTIONS = [
+  { id:'dl1', num:18, en:'I agree that I have a strong intention to visit Riyadh Season again in future editions.', ar:'أوافق على أن لديّ نية قوية لزيارة موسم الرياض مجدداً في الدورات القادمة.' },
+  { id:'dl2', num:19, en:'I agree that I would recommend Riyadh Season as a must-visit event to friends and relatives.', ar:'أوافق على أنني سأوصي بموسم الرياض كفعالية لا تُفوَّت لأصدقائي وأقاربي.' },
+  { id:'dl3', num:20, en:'I agree that I will share positive feedback about my visit with others (word of mouth).', ar:'أوافق على أنني سأشارك الآخرين تقييماً إيجابياً عن زيارتي (الكلام الشفهي).' },
+  { id:'dl4', num:21, en:'I agree that Riyadh Season has increased my interest in visiting other attractions in Riyadh.', ar:'أوافق على أن موسم الرياض قد زاد من اهتمامي بزيارة المعالم والمناطق الأخرى في الرياض.' },
+];
+
+const LIKERT_LABELS = {
+  en: ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'],
+  ar: ['أختلف بشدة','أختلف','محايد','أوافق','أوافق بشدة']
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentLang = 'en';
+const responses = {};
+const TOTAL_REQUIRED = 2 + EQ_QUESTIONS.length + VS_QUESTIONS.length + DL_QUESTIONS.length + 4; // screen+eq+vs+dl+demo
+
+// ─── BUILD LIKERT QUESTIONS ──────────────────────────────────────────────────
+function buildLikertBlock(q) {
+  const labels = LIKERT_LABELS[currentLang];
+  let btns = '';
+  for (let v = 1; v <= 5; v++) {
+    const sel = responses[q.id] == v ? ' selected' : '';
+    btns += `<button type="button" class="likert-btn${sel}" data-qid="${q.id}" data-val="${v}" onclick="selectLikert(this,'${q.id}',${v})">
+      <span class="block text-base font-bold">${v}</span>
+      <span class="block text-xs leading-snug" data-en="${LIKERT_LABELS.en[v-1]}" data-ar="${LIKERT_LABELS.ar[v-1]}">${LIKERT_LABELS[currentLang][v-1]}</span>
+    </button>`;
+  }
+  return `<div class="mb-6" id="wrap-${q.id}">
+    <p class="font-semibold text-gray-800 mb-2 text-sm leading-snug" data-en="${q.num}. ${q.en}" data-ar="${q.num}. ${q.ar}">${q.num}. ${currentLang==='ar' ? q.ar : q.en}</p>
+    <div class="likert-row" id="row-${q.id}">${btns}</div>
+    <p class="error-msg" id="err-${q.id}" data-en="Please select a rating." data-ar="يرجى اختيار تقييم.">Please select a rating.</p>
+  </div>`;
+}
+
+function buildAll() {
+  document.getElementById('eq-questions').innerHTML = EQ_QUESTIONS.map(buildLikertBlock).join('');
+  document.getElementById('vs-questions').innerHTML = VS_QUESTIONS.map(buildLikertBlock).join('');
+  document.getElementById('dl-questions').innerHTML = DL_QUESTIONS.map(buildLikertBlock).join('');
+}
+
+// ─── INTERACTIONS ────────────────────────────────────────────────────────────
+function selectLikert(btn, qid, val) {
+  document.querySelectorAll(`.likert-btn[data-qid="${qid}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  responses[qid] = val;
+  const err = document.getElementById('err-' + qid);
+  if (err) err.classList.remove('show');
+  updateProgress();
+}
+
+function selectDemo(label, name) {
+  document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+    r.closest('.demo-option').classList.remove('selected');
+  });
+  label.classList.add('selected');
+  const radio = label.querySelector('input');
+  if (radio) { radio.checked = true; responses[name] = radio.value; }
+  const err = document.getElementById('err-' + name);
+  if (err) err.classList.remove('show');
+  updateProgress();
+}
+
+function selectScreen(label, name, val) {
+  document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+    r.closest('.demo-option').classList.remove('selected');
+  });
+  label.classList.add('selected');
+  const radio = label.querySelector('input');
+  if (radio) radio.checked = true;
+  responses[name] = val;
+  const stop = document.getElementById('stop-' + name);
+  if (stop) stop.style.display = val === 'no' ? 'block' : 'none';
+  const err = document.getElementById('err-' + name);
+  if (err) err.classList.remove('show');
+  updateProgress();
+}
+
+function updateProgress() {
+  let filled = 0;
+  const allKeys = ['sc1','sc2',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id),'d1','d2','d3','d4'];
+  allKeys.forEach(k => { if (responses[k]) filled++; });
+  const pct = Math.round((filled / allKeys.length) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ─── LANGUAGE TOGGLE ────────────────────────────────────────────────────────
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'ar' : 'en';
+  const html = document.getElementById('html-root');
+  html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+  html.setAttribute('lang', currentLang);
+  document.getElementById('lang-toggle').textContent = currentLang === 'en' ? 'عربي 🌐' : 'English 🌐';
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const txt = el.getAttribute('data-' + currentLang);
+    if (txt) {
+      if (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'SPAN' || el.tagName === 'BUTTON') {
+        if (txt.includes('<br')) el.innerHTML = txt;
+        else el.textContent = txt;
+      }
+    }
+  });
+  buildAll();
+  updateProgress();
+}
+
+// ─── SUBMIT ─────────────────────────────────────────────────────────────────
+function submitSurvey() {
+  if (responses.sc1 === 'no' || responses.sc2 === 'no') {
+    alert(currentLang === 'ar' ? 'عذراً، لا تستطيع المتابعة بناءً على إجاباتك على أسئلة الفرز.' : 'Sorry, you are not eligible to continue based on your screening answers.');
+    return;
+  }
+  let valid = true;
+  const allKeys = ['sc1','sc2',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id),'d1','d2','d3','d4'];
+  allKeys.forEach(k => {
+    if (!responses[k]) {
+      const err = document.getElementById('err-' + k);
+      if (err) err.classList.add('show');
+      valid = false;
+    }
+  });
+  if (!valid) {
+    const firstErr = document.querySelector('.error-msg.show');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  saveResponse();
+  updateCounterBadge();
+  document.getElementById('survey-form').style.display = 'none';
+  const ty = document.getElementById('thank-you');
+  ty.style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+function saveResponse() {
+  const all = loadResponses();
+  const entry = { timestamp: new Date().toLocaleString(), ...responses };
+  all.push(entry);
+  localStorage.setItem('riyadh_season_responses', JSON.stringify(all));
+}
+function loadResponses() {
+  try { return JSON.parse(localStorage.getItem('riyadh_season_responses') || '[]'); } catch { return []; }
+}
+function clearAllResponses() { localStorage.removeItem('riyadh_season_responses'); }
+
+// ─── RESET ───────────────────────────────────────────────────────────────────
+function resetForm() {
+  Object.keys(responses).forEach(k => delete responses[k]);
+  document.querySelectorAll('.demo-option').forEach(l => l.classList.remove('selected'));
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('.screening-stop').forEach(s => s.style.display = 'none');
+  buildAll();
+  updateProgress();
+  document.getElementById('thank-you').style.display = 'none';
+  document.getElementById('survey-form').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── COUNTER ─────────────────────────────────────────────────────────────────
+function updateCounterBadge() {
+  document.getElementById('response-count-badge').textContent = loadResponses().length;
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+function openDashboard() {
+  const all = loadResponses();
+  document.getElementById('dash-count').textContent = all.length;
+  if (all.length > 0) {
+    const genders = {}, ages = {}, edu = {};
+    all.forEach(r => {
+      genders[r.d2] = (genders[r.d2] || 0) + 1;
+      ages[r.d1] = (ages[r.d1] || 0) + 1;
+      edu[r.d3] = (edu[r.d3] || 0) + 1;
+    });
+    const top = obj => Object.entries(obj).sort((a,b)=>b[1]-a[1])[0];
+    const mean = keys => {
+      const vals = all.flatMap(r => keys.map(k => Number(r[k]))).filter(v => v > 0);
+      return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 'N/A';
+    };
+    const eqAvg = mean(EQ_QUESTIONS.map(q=>q.id));
+    const vsAvg = mean(VS_QUESTIONS.map(q=>q.id));
+    const dlAvg = mean(DL_QUESTIONS.map(q=>q.id));
+    const tg = top(genders), ta = top(ages);
+    document.getElementById('stats-grid').innerHTML = `
+      <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;">
+        <p style="font-size:0.75rem;color:#6b7280;">Top Gender</p>
+        <p style="font-weight:700;color:#0d4f2e;">${tg ? tg[0]+' ('+tg[1]+')' : '—'}</p>
+      </div>
+      <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;">
+        <p style="font-size:0.75rem;color:#6b7280;">Top Age Group</p>
+        <p style="font-weight:700;color:#0d4f2e;">${ta ? ta[0]+' ('+ta[1]+')' : '—'}</p>
+      </div>
+      <div style="background:#fefce8;border-radius:0.5rem;padding:0.75rem;text-align:center;">
+        <p style="font-size:0.75rem;color:#6b7280;">Avg. Event Quality</p>
+        <p style="font-weight:700;color:#a16207;">${eqAvg} / 5</p>
+      </div>
+      <div style="background:#fefce8;border-radius:0.5rem;padding:0.75rem;text-align:center;">
+        <p style="font-size:0.75rem;color:#6b7280;">Avg. Satisfaction</p>
+        <p style="font-weight:700;color:#a16207;">${vsAvg} / 5</p>
+      </div>
+      <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;grid-column:span 2;">
+        <p style="font-size:0.75rem;color:#6b7280;">Avg. Destination Loyalty</p>
+        <p style="font-weight:700;color:#0d4f2e;">${dlAvg} / 5</p>
+      </div>`;
+    const recent = all.slice(-5).reverse();
+    document.getElementById('recent-responses').innerHTML = `
+      <p style="font-size:0.875rem;font-weight:600;color:#374151;margin-bottom:0.5rem;">Recent Responses (last ${recent.length}):</p>
+      <div style="overflow-x:auto">
+      <table class="resp-table">
+        <thead><tr><th>#</th><th>Time</th><th>Gender</th><th>Age</th><th>EQ Avg</th></tr></thead>
+        <tbody>
+          ${recent.map((r,i) => {
+            const vals = EQ_QUESTIONS.map(q=>Number(r[q.id])).filter(v=>v>0);
+            const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '—';
+            return `<tr><td>${all.length-i}</td><td>${r.timestamp}</td><td>${r.d2||'—'}</td><td>${r.d1||'—'}</td><td>${avg}</td></tr>`;
+          }).join('')}
+        </tbody>
+      </table></div>`;
+  } else {
+    document.getElementById('stats-grid').innerHTML = '<p style="font-size:0.875rem;color:#9ca3af;grid-column:span 2;">No responses yet.</p>';
+    document.getElementById('recent-responses').innerHTML = '';
+  }
+  document.getElementById('dashboard').classList.add('open');
+}
+function closeDashboard() { document.getElementById('dashboard').classList.remove('open'); }
+document.getElementById('dashboard').addEventListener('click', function(e) { if (e.target === this) closeDashboard(); });
+
+// ─── EXPORT ──────────────────────────────────────────────────────────────────
+function exportToExcel() {
+  const all = loadResponses();
+  if (!all.length) { alert('No responses to export yet.'); return; }
+  const headers = ['Timestamp','Age','Gender','Education','Visit Count',
+    ...EQ_QUESTIONS.map((q,i)=>`EQ${i+1}`),
+    ...VS_QUESTIONS.map((q,i)=>`VS${i+1}`),
+    ...DL_QUESTIONS.map((q,i)=>`DL${i+1}`)];
+  const rows = all.map(r => [
+    r.timestamp, r.d1, r.d2, r.d3, r.d4,
+    ...EQ_QUESTIONS.map(q=>r[q.id]||''),
+    ...VS_QUESTIONS.map(q=>r[q.id]||''),
+    ...DL_QUESTIONS.map(q=>r[q.id]||''),
+  ]);
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  ws['!cols'] = [{wch:22},{wch:10},{wch:10},{wch:14},{wch:14},...Array(EQ_QUESTIONS.length+VS_QUESTIONS.length+DL_QUESTIONS.length).fill({wch:6})];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Survey Responses');
+  const calcMean = keys => {
+    const vals = all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);
+    return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 'N/A';
+  };
+  const summary = [
+    ['Riyadh Season Survey — Summary'],
+    ['Topic','The Impact of Riyadh Season Event Quality on Visitor Satisfaction and Destination Loyalty'],
+    ['Export Date', new Date().toLocaleString()],
+    ['Total Responses', all.length],
+    [],
+    ['Variable','Items','Average Score'],
+    ['Event Quality (EQ)', `EQ1–EQ${EQ_QUESTIONS.length}`, calcMean(EQ_QUESTIONS.map(q=>q.id))],
+    ['Visitor Satisfaction (VS)', `VS1–VS${VS_QUESTIONS.length}`, calcMean(VS_QUESTIONS.map(q=>q.id))],
+    ['Destination Loyalty (DL)', `DL1–DL${DL_QUESTIONS.length}`, calcMean(DL_QUESTIONS.map(q=>q.id))],
+  ];
+  const ws2 = XLSX.utils.aoa_to_sheet(summary);
+  ws2['!cols'] = [{wch:30},{wch:40},{wch:16}];
+  XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+  XLSX.writeFile(wb, `RiyadhSeason_Survey_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function clearResponses() {
+  if (!confirm('Are you sure you want to delete ALL responses? This cannot be undone.')) return;
+  clearAllResponses();
+  updateCounterBadge();
+  closeDashboard();
+  setTimeout(openDashboard, 100);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+buildAll();
+updateCounterBadge();
+</script>
+</body>
+</html>
