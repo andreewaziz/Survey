@@ -271,7 +271,6 @@
     <span id="response-count-badge" style="background:#fff;color:#a16207;border-radius:9999px;padding:0.125rem 0.5rem;font-size:0.75rem;font-weight:700;margin-left:0.25rem;">0</span>
   </button>
 
-  <!-- DASHBOARD MODAL -->
   <div id="dashboard" role="dialog" aria-modal="true">
     <div id="dashboard-panel">
       <button id="close-dashboard" onclick="closeDashboard()">✕</button>
@@ -295,15 +294,12 @@
     </div>
   </div>
 
-  <!-- MAIN CONTAINER -->
   <div class="max-w-3xl mx-auto px-4 py-8">
 
-    <!-- KSU Logo Top -->
     <div style="text-align:center;margin-bottom:2rem;">
       <img src="KSU.png" alt="KSU Logo" style="max-width:300px;height:auto;opacity:0.9;">
     </div>
 
-    <!-- Hero -->
     <div class="hero fade-in">
       <div class="section-badge" data-en="Academic Research Survey" data-ar="استبيان بحث أكاديمي">Academic Research Survey</div>
       <h1 class="text-2xl md-text-3xl font-bold mb-2 leading-snug"
@@ -318,7 +314,6 @@
       </p>
     </div>
 
-    <!-- Sticky Progress -->
     <div class="sticky-progress fade-in">
       <div class="flex justify-between items-center mb-1 px-1" style="padding-left:0.25rem;padding-right:0.25rem;">
         <span class="text-xs font-semibold text-gray-500" id="progress-label" data-en="Survey Progress" data-ar="تقدم الاستبيان">Survey Progress</span>
@@ -329,7 +324,6 @@
       </div>
     </div>
 
-    <!-- Intro -->
     <div class="section-card fade-in">
       <h2 class="text-lg font-bold mb-3" style="color:#0d4f2e;"
           data-en="Participant Information" data-ar="معلومات للمشارك">Participant Information</h2>
@@ -342,7 +336,6 @@
 
     <form id="survey-form" novalidate>
 
-      <!-- PART 1: SCREENING -->
       <div class="section-card fade-in">
         <div class="section-badge" data-en="Part 1" data-ar="الجزء الأول">Part 1</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
@@ -350,7 +343,6 @@
         <p class="text-sm text-gray-500 mb-5"
            data-en="Please select the appropriate option." data-ar="يرجى اختيار الخيار المناسب.">Please select the appropriate option.</p>
 
-        <!-- Q1 -->
         <div class="mb-5" id="wrap-sc1">
           <p class="font-semibold text-gray-800 mb-2"
              data-en="1. Have you attended Riyadh Season at least once in the past two years?"
@@ -373,7 +365,6 @@
           <p class="error-msg" id="err-sc1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
-        <!-- Q2 -->
         <div class="mb-5" id="wrap-sc2">
           <p class="font-semibold text-gray-800 mb-2"
              data-en="2. Is your age 18 years or older?"
@@ -397,9 +388,55 @@
         </div>
       </div>
 
-      <!-- PART 2: EVENT QUALITY -->
       <div class="section-card fade-in">
         <div class="section-badge" data-en="Part 2" data-ar="الجزء الثاني">Part 2</div>
+        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
+            data-en="Demographic Profile" data-ar="البيانات الشخصية">Demographic Profile</h2>
+        <p class="text-sm text-gray-500 mb-5"
+           data-en="Please select the most appropriate option."
+           data-ar="يرجى اختيار الخيار الأنسب.">
+          Please select the most appropriate option.
+        </p>
+
+        <div class="mb-5" id="wrap-d1">
+          <p class="font-semibold text-gray-800 mb-2" data-en="22. What is your age group?" data-ar="22. ما هي فئتك العمرية؟">22. What is your age group?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="18-24"> <span data-en="18–24 years" data-ar="18–24 سنة">18–24 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="25-34"> <span data-en="25–34 years" data-ar="25–34 سنة">25–34 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="35-44"> <span data-en="35–44 years" data-ar="35–44 سنة">35–44 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="45-54"> <span data-en="45–54 years" data-ar="45–54 سنة">45–54 years</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="55+"> <span data-en="55 years or older" data-ar="55 سنة فأكثر">55 years or older</span></label>
+          <p class="error-msg" id="err-d1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <div class="mb-5" id="wrap-d2">
+          <p class="font-semibold text-gray-800 mb-2" data-en="23. What is your gender?" data-ar="23. ما هو جنسك؟">23. What is your gender?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Female"> <span data-en="Female" data-ar="أنثى">Female</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Prefer not to say"> <span data-en="Prefer not to say" data-ar="أفضل عدم الإفصاح">Prefer not to say</span></label>
+          <p class="error-msg" id="err-d2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <div class="mb-5" id="wrap-d3">
+          <p class="font-semibold text-gray-800 mb-2" data-en="24. What is your highest level of education?" data-ar="24. ما هو أعلى مستوى تعليمي حصلت عليه؟">24. What is your highest level of education?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="High School"> <span data-en="High School or below" data-ar="ثانوية عامة أو أقل">High School or below</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Diploma"> <span data-en="Diploma / Associate Degree" data-ar="دبلوم">Diploma / Associate Degree</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Bachelor"> <span data-en="Bachelor's Degree" data-ar="بكالوريوس">Bachelor's Degree</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Masters/PhD"> <span data-en="Master's or Doctorate Degree (PhD)" data-ar="ماجستير أو دكتوراه">Master's or Doctorate Degree (PhD)</span></label>
+          <p class="error-msg" id="err-d3" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <div class="mb-5" id="wrap-d4">
+          <p class="font-semibold text-gray-800 mb-2" data-en="25. How many times have you visited Riyadh Season in total?" data-ar="25. كم مرة زرت موسم الرياض إجمالاً؟">25. How many times have you visited Riyadh Season in total?</p>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="1"> <span data-en="1 time" data-ar="مرة واحدة">1 time</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="2-3"> <span data-en="2–3 times" data-ar="2–3 مرات">2–3 times</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="4-5"> <span data-en="4–5 times" data-ar="4–5 مرات">4–5 times</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="5+"> <span data-en="More than 5 times" data-ar="أكثر من 5 مرات">More than 5 times</span></label>
+          <p class="error-msg" id="err-d4" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+      </div>
+
+      <div class="section-card fade-in">
+        <div class="section-badge" data-en="Part 3" data-ar="الجزء الثالث">Part 3</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
             data-en="Event Quality" data-ar="جودة الفعالية">Event Quality</h2>
         <p class="text-sm text-gray-500 mb-5"
@@ -411,9 +448,8 @@
         <div id="eq-questions"></div>
       </div>
 
-      <!-- PART 3: VISITOR SATISFACTION -->
       <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 3" data-ar="الجزء الثالث">Part 3</div>
+        <div class="section-badge" data-en="Part 4" data-ar="الجزء الرابع">Part 4</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
             data-en="Visitor Satisfaction" data-ar="رضا الزوار">Visitor Satisfaction</h2>
         <p class="text-sm text-gray-500 mb-5"
@@ -424,9 +460,8 @@
         <div id="vs-questions"></div>
       </div>
 
-      <!-- PART 4: DESTINATION LOYALTY -->
       <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 4" data-ar="الجزء الرابع">Part 4</div>
+        <div class="section-badge" data-en="Part 5" data-ar="الجزء الخامس">Part 5</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
             data-en="Destination Loyalty" data-ar="الولاء للوجهة السياحية">Destination Loyalty</h2>
         <p class="text-sm text-gray-500 mb-5"
@@ -437,59 +472,6 @@
         <div id="dl-questions"></div>
       </div>
 
-      <!-- PART 5: DEMOGRAPHICS -->
-      <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 5" data-ar="الجزء الخامس">Part 5</div>
-        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
-            data-en="Demographic Profile" data-ar="البيانات الشخصية">Demographic Profile</h2>
-        <p class="text-sm text-gray-500 mb-5"
-           data-en="Please select the most appropriate option."
-           data-ar="يرجى اختيار الخيار الأنسب.">
-          Please select the most appropriate option.
-        </p>
-
-        <!-- Age -->
-        <div class="mb-5" id="wrap-d1">
-          <p class="font-semibold text-gray-800 mb-2" data-en="22. What is your age group?" data-ar="22. ما هي فئتك العمرية؟">22. What is your age group?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="18-24"> <span data-en="18–24 years" data-ar="18–24 سنة">18–24 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="25-34"> <span data-en="25–34 years" data-ar="25–34 سنة">25–34 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="35-44"> <span data-en="35–44 years" data-ar="35–44 سنة">35–44 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="45-54"> <span data-en="45–54 years" data-ar="45–54 سنة">45–54 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="55+"> <span data-en="55 years or older" data-ar="55 سنة فأكثر">55 years or older</span></label>
-          <p class="error-msg" id="err-d1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
-        </div>
-
-        <!-- Gender -->
-        <div class="mb-5" id="wrap-d2">
-          <p class="font-semibold text-gray-800 mb-2" data-en="23. What is your gender?" data-ar="23. ما هو جنسك؟">23. What is your gender?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Female"> <span data-en="Female" data-ar="أنثى">Female</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Prefer not to say"> <span data-en="Prefer not to say" data-ar="أفضل عدم الإفصاح">Prefer not to say</span></label>
-          <p class="error-msg" id="err-d2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
-        </div>
-
-        <!-- Education -->
-        <div class="mb-5" id="wrap-d3">
-          <p class="font-semibold text-gray-800 mb-2" data-en="24. What is your highest level of education?" data-ar="24. ما هو أعلى مستوى تعليمي حصلت عليه؟">24. What is your highest level of education?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="High School"> <span data-en="High School or below" data-ar="ثانوية عامة أو أقل">High School or below</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Diploma"> <span data-en="Diploma / Associate Degree" data-ar="دبلوم">Diploma / Associate Degree</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Bachelor"> <span data-en="Bachelor's Degree" data-ar="بكالوريوس">Bachelor's Degree</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Masters/PhD"> <span data-en="Master's or Doctorate Degree (PhD)" data-ar="ماجستير أو دكتوراه">Master's or Doctorate Degree (PhD)</span></label>
-          <p class="error-msg" id="err-d3" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
-        </div>
-
-        <!-- Visit Count -->
-        <div class="mb-5" id="wrap-d4">
-          <p class="font-semibold text-gray-800 mb-2" data-en="25. How many times have you visited Riyadh Season in total?" data-ar="25. كم مرة زرت موسم الرياض إجمالاً؟">25. How many times have you visited Riyadh Season in total?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="1"> <span data-en="1 time" data-ar="مرة واحدة">1 time</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="2-3"> <span data-en="2–3 times" data-ar="2–3 مرات">2–3 times</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="4-5"> <span data-en="4–5 times" data-ar="4–5 مرات">4–5 times</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="5+"> <span data-en="More than 5 times" data-ar="أكثر من 5 مرات">More than 5 times</span></label>
-          <p class="error-msg" id="err-d4" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
-        </div>
-      </div>
-
-      <!-- Submit -->
       <div class="text-center mb-10">
         <button type="button" id="submit-btn" onclick="submitSurvey()"
                 data-en="Submit Survey" data-ar="إرسال الاستبيان">Submit Survey</button>
@@ -502,7 +484,6 @@
 
     </form>
 
-    <!-- Thank You -->
     <div id="thank-you" class="flex-col items-center text-center py-16" style="display:none;">
       <div class="text-6xl mb-4">🎉</div>
       <h2 class="text-2xl font-bold mb-3" style="color:#0d4f2e;"
@@ -556,7 +537,7 @@ const LIKERT_LABELS = {
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let currentLang = 'en';
 const responses = {};
-const TOTAL_REQUIRED = 2 + EQ_QUESTIONS.length + VS_QUESTIONS.length + DL_QUESTIONS.length + 4; // screen+eq+vs+dl+demo
+const TOTAL_REQUIRED = 2 + 4 + EQ_QUESTIONS.length + VS_QUESTIONS.length + DL_QUESTIONS.length;
 
 // ─── BUILD LIKERT QUESTIONS ──────────────────────────────────────────────────
 function buildLikertBlock(q) {
@@ -621,7 +602,7 @@ function selectScreen(label, name, val) {
 
 function updateProgress() {
   let filled = 0;
-  const allKeys = ['sc1','sc2',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id),'d1','d2','d3','d4'];
+  const allKeys = ['sc1','sc2','d1','d2','d3','d4',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id)];
   allKeys.forEach(k => { if (responses[k]) filled++; });
   const pct = Math.round((filled / allKeys.length) * 100);
   document.getElementById('progress-bar').style.width = pct + '%';
@@ -638,7 +619,7 @@ function toggleLang() {
   document.querySelectorAll('[data-en]').forEach(el => {
     const txt = el.getAttribute('data-' + currentLang);
     if (txt) {
-      if (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'SPAN' || el.tagName === 'BUTTON') {
+      if (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'SPAN' || el.tagName === 'BUTTON' || el.tagName === 'DIV') {
         if (txt.includes('<br')) el.innerHTML = txt;
         else el.textContent = txt;
       }
@@ -655,7 +636,7 @@ function submitSurvey() {
     return;
   }
   let valid = true;
-  const allKeys = ['sc1','sc2',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id),'d1','d2','d3','d4'];
+  const allKeys = ['sc1','sc2','d1','d2','d3','d4',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id)];
   allKeys.forEach(k => {
     if (!responses[k]) {
       const err = document.getElementById('err-' + k);
