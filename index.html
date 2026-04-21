@@ -225,7 +225,6 @@
     .font-semibold { font-weight: 600; }
     .font-bold { font-weight: 700; }
     .text-center { text-align: center; }
-    .text-left { text-align: left; }
     .flex { display: flex; }
     .flex-col { flex-direction: column; }
     .flex-wrap { flex-wrap: wrap; }
@@ -238,24 +237,15 @@
     .col-span-2 { grid-column: span 2 / span 2; }
     .w-full { width: 100%; }
     .rounded-full { border-radius: 9999px; }
-    .rounded-xl { border-radius: 0.75rem; }
     .bg-gray-200 { background-color: #e5e7eb; }
     .h-2\.5 { height: 0.625rem; }
     .opacity-75 { opacity: 0.75; }
-    .opacity-90 { opacity: 0.9; }
     .leading-snug { line-height: 1.375; }
     .leading-relaxed { line-height: 1.625; }
     .text-white { color: #fff; }
     .text-gray-500 { color: #6b7280; }
     .text-gray-700 { color: #374151; }
     .text-gray-800 { color: #1f2937; }
-    .text-blue-700 { color: #1d4ed8; }
-    .text-green-700 { color: #15803d; }
-    .text-yellow-700 { color: #a16207; }
-    .bg-green-50 { background-color: #f0fdf4; }
-    .bg-yellow-50 { background-color: #fefce8; }
-    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
     .text-6xl { font-size: 3.75rem; line-height: 1; }
     .block { display: block; }
     p { margin: 0; }
@@ -274,8 +264,8 @@
   <div id="dashboard" role="dialog" aria-modal="true">
     <div id="dashboard-panel">
       <button id="close-dashboard" onclick="closeDashboard()">✕</button>
-      <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;" id="dash-title">📊 Survey Responses Dashboard</h2>
-      <p class="text-sm text-gray-500 mb-4" id="dash-subtitle">All responses are saved in this browser.</p>
+      <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;">📊 Survey Responses Dashboard</h2>
+      <p class="text-sm text-gray-500 mb-4">All responses are saved in this browser.</p>
       <div class="flex items-center gap-3 mb-5">
         <div class="counter-badge">
           <span>📝</span>
@@ -284,11 +274,11 @@
         </div>
       </div>
       <div id="stats-grid" class="grid grid-cols-2 gap-3 mb-5">
-        <p class="text-sm text-gray-500 col-span-2">No responses yet. Share the survey link to start collecting data.</p>
+        <p class="text-sm text-gray-500 col-span-2">No responses yet.</p>
       </div>
       <div class="flex gap-3 flex-wrap mb-5">
-        <button id="export-btn" onclick="exportToExcel()">📥 <span id="export-label">Export to Excel (.xlsx)</span></button>
-        <button id="clear-btn" onclick="clearResponses()">🗑️ <span id="clear-label">Clear All</span></button>
+        <button id="export-btn" onclick="exportToExcel()">📥 Export to Excel (.xlsx)</button>
+        <button id="clear-btn" onclick="clearResponses()">🗑️ Clear All</button>
       </div>
       <div id="recent-responses"></div>
     </div>
@@ -315,12 +305,12 @@
     </div>
 
     <div class="sticky-progress fade-in">
-      <div class="flex justify-between items-center mb-1 px-1" style="padding-left:0.25rem;padding-right:0.25rem;">
-        <span class="text-xs font-semibold text-gray-500" id="progress-label" data-en="Survey Progress" data-ar="تقدم الاستبيان">Survey Progress</span>
+      <div class="flex justify-between items-center mb-1" style="padding-left:0.25rem;padding-right:0.25rem;">
+        <span class="text-xs font-semibold text-gray-500" data-en="Survey Progress" data-ar="تقدم الاستبيان">Survey Progress</span>
         <span class="text-xs font-bold" style="color:#1a7a47;" id="progress-pct">0%</span>
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2\.5">
-        <div id="progress-bar" class="h-2\.5 rounded-full" style="width:0%;background:linear-gradient(90deg,#0d4f2e,#c9a84c);height:0.625rem;border-radius:9999px;"></div>
+        <div id="progress-bar" style="width:0%;background:linear-gradient(90deg,#0d4f2e,#c9a84c);height:0.625rem;border-radius:9999px;"></div>
       </div>
     </div>
 
@@ -336,18 +326,19 @@
 
     <form id="survey-form" novalidate>
 
+      <!-- SECTION 1: SCREENING -->
       <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 1" data-ar="الجزء الأول">Part 1</div>
+        <div class="section-badge" data-en="Section 1" data-ar="القسم الأول">Section 1</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
-            data-en="Screening Questions" data-ar="أسئلة الفرز">Screening Questions</h2>
+            data-en="Screening Question" data-ar="سؤال الفرز">Screening Question</h2>
         <p class="text-sm text-gray-500 mb-5"
            data-en="Please select the appropriate option." data-ar="يرجى اختيار الخيار المناسب.">Please select the appropriate option.</p>
 
         <div class="mb-5" id="wrap-sc1">
           <p class="font-semibold text-gray-800 mb-2"
-             data-en="1. Have you attended Riyadh Season at least once in the past two years?"
-             data-ar="1. هل حضرت موسم الرياض مرة واحدة على الأقل خلال العامين الماضيين؟">
-            1. Have you attended Riyadh Season at least once in the past two years?
+             data-en="1. Have you visited or experienced Riyadh Season?"
+             data-ar="1. هل سبق لك زيارة أو تجربة موسم الرياض؟">
+            1. Have you visited or experienced Riyadh Season?
           </p>
           <label class="demo-option" onclick="selectScreen(this,'sc1','yes')">
             <input type="radio" name="sc1" value="yes">
@@ -358,116 +349,91 @@
             <span data-en="No (If No, please stop here)" data-ar="لا (إذا كانت الإجابة لا، يرجى التوقف هنا)">No (If No, please stop here)</span>
           </label>
           <div class="screening-stop" id="stop-sc1"
-               data-en="⚠️ Thank you for your time. This survey is only for those who have attended Riyadh Season in the past two years."
-               data-ar="⚠️ شكراً لوقتك. هذا الاستبيان مخصص لمن حضر موسم الرياض خلال العامين الماضيين فقط.">
-            ⚠️ Thank you for your time. This survey is only for those who have attended Riyadh Season in the past two years.
+               data-en="⚠️ Thank you for your time. This survey is only for those who have visited or experienced Riyadh Season."
+               data-ar="⚠️ شكراً لوقتك. هذا الاستبيان مخصص لمن سبق له زيارة أو تجربة موسم الرياض فقط.">
+            ⚠️ Thank you for your time. This survey is only for those who have visited or experienced Riyadh Season.
           </div>
           <p class="error-msg" id="err-sc1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
-
-        <div class="mb-5" id="wrap-sc2">
-          <p class="font-semibold text-gray-800 mb-2"
-             data-en="2. Is your age 18 years or older?"
-             data-ar="2. هل عمرك 18 سنة أو أكثر؟">
-            2. Is your age 18 years or older?
-          </p>
-          <label class="demo-option" onclick="selectScreen(this,'sc2','yes')">
-            <input type="radio" name="sc2" value="yes">
-            <span data-en="Yes" data-ar="نعم">Yes</span>
-          </label>
-          <label class="demo-option" onclick="selectScreen(this,'sc2','no')">
-            <input type="radio" name="sc2" value="no">
-            <span data-en="No (If No, please stop here)" data-ar="لا (إذا كانت الإجابة لا، يرجى التوقف هنا)">No (If No, please stop here)</span>
-          </label>
-          <div class="screening-stop" id="stop-sc2"
-               data-en="⚠️ Thank you for your time. This survey is only for participants aged 18 years or older."
-               data-ar="⚠️ شكراً لوقتك. هذا الاستبيان مخصص للمشاركين الذين تبلغ أعمارهم 18 عاماً أو أكثر.">
-            ⚠️ Thank you for your time. This survey is only for participants aged 18 years or older.
-          </div>
-          <p class="error-msg" id="err-sc2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
-        </div>
       </div>
 
+      <!-- SECTION 2: DEMOGRAPHICS -->
       <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 2" data-ar="الجزء الثاني">Part 2</div>
+        <div class="section-badge" data-en="Section 2" data-ar="القسم الثاني">Section 2</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
-            data-en="Demographic Profile" data-ar="البيانات الشخصية">Demographic Profile</h2>
+            data-en="Demographic Information" data-ar="البيانات الشخصية">Demographic Information</h2>
         <p class="text-sm text-gray-500 mb-5"
            data-en="Please select the most appropriate option."
-           data-ar="يرجى اختيار الخيار الأنسب.">
-          Please select the most appropriate option.
-        </p>
+           data-ar="يرجى اختيار الخيار الأنسب.">Please select the most appropriate option.</p>
 
+        <!-- Gender -->
         <div class="mb-5" id="wrap-d1">
-          <p class="font-semibold text-gray-800 mb-2" data-en="3. What is your age group?" data-ar="3. ما هي فئتك العمرية؟">3. What is your age group?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="18-24"> <span data-en="18–24 years" data-ar="18–24 سنة">18–24 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="25-34"> <span data-en="25–34 years" data-ar="25–34 سنة">25–34 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="35-44"> <span data-en="35–44 years" data-ar="35–44 سنة">35–44 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="45-54"> <span data-en="45–54 years" data-ar="45–54 سنة">45–54 years</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="55+"> <span data-en="55 years or older" data-ar="55 سنة فأكثر">55 years or older</span></label>
+          <p class="font-semibold text-gray-800 mb-2" data-en="2. Gender" data-ar="2. الجنس">2. Gender</p>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="Female"> <span data-en="Female" data-ar="أنثى">Female</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="Prefer not to say"> <span data-en="Prefer not to say" data-ar="أفضل عدم الإفصاح">Prefer not to say</span></label>
           <p class="error-msg" id="err-d1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
+        <!-- Age -->
         <div class="mb-5" id="wrap-d2">
-          <p class="font-semibold text-gray-800 mb-2" data-en="4. What is your gender?" data-ar="4. ما هو جنسك؟">4. What is your gender?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Female"> <span data-en="Female" data-ar="أنثى">Female</span></label>
+          <p class="font-semibold text-gray-800 mb-2" data-en="3. Age" data-ar="3. العمر">3. Age</p>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Under 20"> <span data-en="Under 20" data-ar="أقل من 20">Under 20</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="20-29"> <span data-en="20–29" data-ar="20–29">20–29</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="30-39"> <span data-en="30–39" data-ar="30–39">30–39</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="40-49"> <span data-en="40–49" data-ar="40–49">40–49</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="50+"> <span data-en="50 and above" data-ar="50 فأكثر">50 and above</span></label>
           <p class="error-msg" id="err-d2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
+        <!-- Nationality -->
         <div class="mb-5" id="wrap-d3">
-          <p class="font-semibold text-gray-800 mb-2" data-en="5. What is your highest level of education?" data-ar="5. ما هو أعلى مستوى تعليمي حصلت عليه؟">5. What is your highest level of education?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="High School"> <span data-en="High School or below" data-ar="ثانوية عامة أو أقل">High School or below</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Diploma"> <span data-en="Diploma / Associate Degree" data-ar="دبلوم">Diploma / Associate Degree</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Bachelor"> <span data-en="Bachelor's Degree" data-ar="بكالوريوس">Bachelor's Degree</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Masters/PhD"> <span data-en="Master's or Doctorate Degree (PhD)" data-ar="ماجستير أو دكتوراه">Master's or Doctorate Degree (PhD)</span></label>
+          <p class="font-semibold text-gray-800 mb-2" data-en="4. Nationality" data-ar="4. الجنسية">4. Nationality</p>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Saudi"> <span data-en="Saudi" data-ar="سعودي">Saudi</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Non-Saudi"> <span data-en="Non-Saudi" data-ar="غير سعودي">Non-Saudi</span></label>
           <p class="error-msg" id="err-d3" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
+        <!-- Education -->
         <div class="mb-5" id="wrap-d4">
-          <p class="font-semibold text-gray-800 mb-2" data-en="6. How many times have you visited Riyadh Season in total?" data-ar="6. كم مرة زرت موسم الرياض إجمالاً؟">6. How many times have you visited Riyadh Season in total?</p>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="1"> <span data-en="1 time" data-ar="مرة واحدة">1 time</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="2-3"> <span data-en="2–3 times" data-ar="2–3 مرات">2–3 times</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="4-5"> <span data-en="4–5 times" data-ar="4–5 مرات">4–5 times</span></label>
-          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="5+"> <span data-en="More than 5 times" data-ar="أكثر من 5 مرات">More than 5 times</span></label>
+          <p class="font-semibold text-gray-800 mb-2" data-en="5. Educational Level" data-ar="5. المستوى التعليمي">5. Educational Level</p>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="High school or below"> <span data-en="High school or below" data-ar="ثانوية عامة أو أقل">High school or below</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="Diploma"> <span data-en="Diploma" data-ar="دبلوم">Diploma</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="Bachelor's degree"> <span data-en="Bachelor's degree" data-ar="بكالوريوس">Bachelor's degree</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="Master's degree"> <span data-en="Master's degree" data-ar="ماجستير">Master's degree</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="Doctorate"> <span data-en="Doctorate" data-ar="دكتوراه">Doctorate</span></label>
           <p class="error-msg" id="err-d4" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
+        </div>
+
+        <!-- Frequency -->
+        <div class="mb-5" id="wrap-d5">
+          <p class="font-semibold text-gray-800 mb-2" data-en="6. Frequency of attending Riyadh Season events" data-ar="6. تكرار حضور فعاليات موسم الرياض">6. Frequency of attending Riyadh Season events</p>
+          <label class="demo-option" onclick="selectDemo(this,'d5')"><input type="radio" name="d5" value="First time"> <span data-en="First time" data-ar="أول مرة">First time</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d5')"><input type="radio" name="d5" value="Occasionally"> <span data-en="Occasionally" data-ar="أحياناً">Occasionally</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d5')"><input type="radio" name="d5" value="Regularly"> <span data-en="Regularly" data-ar="بانتظام">Regularly</span></label>
+          <label class="demo-option" onclick="selectDemo(this,'d5')"><input type="radio" name="d5" value="Frequently"> <span data-en="Frequently" data-ar="بشكل متكرر">Frequently</span></label>
+          <p class="error-msg" id="err-d5" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
       </div>
 
+      <!-- SECTION 3: MEASUREMENT ITEMS -->
       <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 3" data-ar="الجزء الثالث">Part 3</div>
+        <div class="section-badge" data-en="Section 3" data-ar="القسم الثالث">Section 3</div>
         <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
-            data-en="Event Quality" data-ar="جودة الفعالية">Event Quality</h2>
+            data-en="Measurement Items" data-ar="عبارات القياس">Measurement Items</h2>
         <p class="text-sm text-gray-500 mb-5"
-           data-en="Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree)."
-           data-ar="يرجى تحديد مستوى موافقتك (1 = أختلف بشدة، 5 = أوافق بشدة).">
-          Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree).
+           data-en="Please indicate your level of agreement with the following statements (1 = Strongly Disagree, 5 = Strongly Agree)."
+           data-ar="يرجى تحديد مستوى موافقتك على العبارات التالية (1 = أختلف بشدة، 5 = أوافق بشدة).">
+          Please indicate your level of agreement with the following statements (1 = Strongly Disagree, 5 = Strongly Agree).
         </p>
 
+        <h3 style="color:#0d4f2e;font-weight:700;margin-bottom:1rem;font-size:1rem;" data-en="A. Event Quality" data-ar="أ. جودة الفعالية">A. Event Quality</h3>
         <div id="eq-questions"></div>
-      </div>
 
-      <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 4" data-ar="الجزء الرابع">Part 4</div>
-        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
-            data-en="Visitor Satisfaction" data-ar="رضا الزوار">Visitor Satisfaction</h2>
-        <p class="text-sm text-gray-500 mb-5"
-           data-en="Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree)."
-           data-ar="يرجى تحديد مستوى موافقتك (1 = أختلف بشدة، 5 = أوافق بشدة).">
-          Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree).
-        </p>
+        <h3 style="color:#0d4f2e;font-weight:700;margin:1.5rem 0 1rem;font-size:1rem;" data-en="B. Visitor Satisfaction" data-ar="ب. رضا الزوار">B. Visitor Satisfaction</h3>
         <div id="vs-questions"></div>
-      </div>
 
-      <div class="section-card fade-in">
-        <div class="section-badge" data-en="Part 5" data-ar="الجزء الخامس">Part 5</div>
-        <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;"
-            data-en="Destination Loyalty" data-ar="الولاء للوجهة السياحية">Destination Loyalty</h2>
-        <p class="text-sm text-gray-500 mb-5"
-           data-en="Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree)."
-           data-ar="يرجى تحديد مستوى موافقتك (1 = أختلف بشدة، 5 = أوافق بشدة).">
-          Please indicate your level of agreement (1 = Strongly Disagree, 5 = Strongly Agree).
-        </p>
+        <h3 style="color:#0d4f2e;font-weight:700;margin:1.5rem 0 1rem;font-size:1rem;" data-en="C. Destination Loyalty" data-ar="ج. الولاء للوجهة السياحية">C. Destination Loyalty</h3>
         <div id="dl-questions"></div>
       </div>
 
@@ -503,29 +469,30 @@
 <script>
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const EQ_QUESTIONS = [
-  { id:'eq1',  num:7,  en:'I agree that the program and theme of Riyadh Season were highly attractive and engaging.', ar:'أوافق على أن برنامج وموضوع موسم الرياض كانا جذابَين للغاية.' },
-  { id:'eq2',  num:8,  en:'I agree that Riyadh Season offered a wide and diverse variety of activities suitable for different interests.', ar:'أوافق على أن موسم الرياض قدّم تشكيلة واسعة ومتنوعة من الأنشطة تناسب اهتمامات مختلفة.' },
-  { id:'eq3',  num:9,  en:'I agree that the staff members and volunteers were helpful, courteous, and professional.', ar:'أوافق على أن الموظفين والمتطوعين كانوا متعاونين ومهذبين ومحترفين.' },
-  { id:'eq4',  num:10, en:'I agree that the facilities (e.g., seating, restrooms, rest areas) were clean and well-maintained.', ar:'أوافق على أن المرافق (كالمقاعد والحمامات ومناطق الراحة) كانت نظيفة وصالحة للاستخدام.' },
-  { id:'eq5',  num:11, en:'I agree that the safety and security measures at the event were visible and effective.', ar:'أوافق على أن إجراءات الأمن والسلامة في الفعالية كانت واضحة وفعّالة.' },
-  { id:'eq6',  num:12, en:'I agree that the event zones and venues were easily accessible via available transportation.', ar:'أوافق على أن مواقع الفعاليات والمناطق المخصصة كانت يسيرة الوصول عبر وسائل النقل المتاحة.' },
-  { id:'eq7',  num:13, en:'I agree that the crowd management procedures were well-organized and reduced congestion.', ar:'أوافق على أن إجراءات إدارة الحشود كانت منظمة وأسهمت في تخفيف الازدحام.' },
-  { id:'eq8',  num:14, en:'I agree that information regarding schedules, maps, and events was readily available and clear.', ar:'أوافق على أن المعلومات المتعلقة بالجداول والخرائط والفعاليات كانت متاحة وواضحة.' },
-  { id:'eq9',  num:15, en:'I agree that the overall entertainment quality met international standards of excellence.', ar:'أوافق على أن جودة الترفيه الإجمالية استوفت المعايير الدولية للتميز.' },
-  { id:'eq10', num:16, en:'I agree that the digital platforms (app/website) provided accurate and timely information.', ar:'أوافق على أن المنصات الرقمية (التطبيق/الموقع الإلكتروني) قدّمت معلومات دقيقة وفي الوقت المناسب.' },
-  { id:'eq11', num:17, en:'I agree that the ticket booking and entry processes were efficient and user-friendly.', ar:'أوافق على أن عمليات حجز التذاكر والدخول كانت فعّالة وسهلة الاستخدام.' },
+  { id:'eq1', num:7,  en:'The overall organization of Riyadh Season events is highly professional.', ar:'التنظيم العام لفعاليات موسم الرياض احترافي للغاية.' },
+  { id:'eq2', num:8,  en:'The variety of activities offered is diverse and engaging.', ar:'تشكيلة الأنشطة المقدمة متنوعة وجذابة.' },
+  { id:'eq3', num:9,  en:'The events provide a high level of entertainment value.', ar:'الفعاليات توفر مستوى عالياً من قيمة الترفيه.' },
+  { id:'eq4', num:10, en:'Facilities and infrastructure meet visitor expectations.', ar:'المرافق والبنية التحتية تلبي توقعات الزوار.' },
+  { id:'eq5', num:11, en:'Event scheduling and time management are well coordinated.', ar:'جداول الفعاليات وإدارة الوقت منسقة بشكل جيد.' },
+  { id:'eq6', num:12, en:'Staff and service providers are responsive and helpful.', ar:'الموظفون ومقدمو الخدمات متجاوبون ومتعاونون.' },
+  { id:'eq7', num:13, en:'The event environment is safe and well-managed.', ar:'بيئة الفعالية آمنة وتُدار بشكل جيد.' },
+  { id:'eq8', num:14, en:'The overall experience reflects high-quality standards.', ar:'التجربة الإجمالية تعكس معايير جودة عالية.' },
 ];
 const VS_QUESTIONS = [
-  { id:'vs1', num:18, en:'I agree that I am completely satisfied with my overall experience at Riyadh Season.', ar:'أوافق على أنني راضٍ تماماً عن تجربتي الإجمالية في موسم الرياض.' },
-  { id:'vs2', num:19, en:'I agree that Riyadh Season either met or exceeded my initial expectations.', ar:'أوافق على أن موسم الرياض قد لبّى توقعاتي الأولية أو تجاوزها.' },
-  { id:'vs3', num:20, en:'I agree that the quality of the experience justified the time and money spent.', ar:'أوافق على أن جودة التجربة كانت تستحق الوقت والمال المُنفقَين.' },
-  { id:'vs4', num:21, en:'I agree that I had a delightful and enjoyable time during my visit.', ar:'أوافق على أنني قضيت وقتاً ممتعاً وبهيجاً خلال زيارتي.' },
+  { id:'vs1', num:15, en:'My overall experience with Riyadh Season was satisfying.', ar:'تجربتي الإجمالية مع موسم الرياض كانت مُرضية.' },
+  { id:'vs2', num:16, en:'The events met my expectations.', ar:'الفعاليات لبّت توقعاتي.' },
+  { id:'vs3', num:17, en:'I felt pleased with the quality of the experience.', ar:'شعرت بالرضا تجاه جودة التجربة.' },
+  { id:'vs4', num:18, en:'Attending Riyadh Season was a worthwhile decision.', ar:'حضور موسم الرياض كان قراراً صائباً.' },
+  { id:'vs5', num:19, en:'I enjoyed the overall atmosphere of the events.', ar:'استمتعت بالأجواء العامة للفعاليات.' },
+  { id:'vs6', num:20, en:'My experience exceeded what I had anticipated.', ar:'تجربتي تجاوزت ما كنت أتوقعه.' },
 ];
 const DL_QUESTIONS = [
-  { id:'dl1', num:22, en:'I agree that I have a strong intention to visit Riyadh Season again in future editions.', ar:'أوافق على أن لديّ نية قوية لزيارة موسم الرياض مجدداً في الدورات القادمة.' },
-  { id:'dl2', num:23, en:'I agree that I would recommend Riyadh Season as a must-visit event to friends and relatives.', ar:'أوافق على أنني سأوصي بموسم الرياض كفعالية لا تُفوَّت لأصدقائي وأقاربي.' },
-  { id:'dl3', num:24, en:'I agree that I will share positive feedback about my visit with others (word of mouth).', ar:'أوافق على أنني سأشارك الآخرين تقييماً إيجابياً عن زيارتي (الكلام الشفهي).' },
-  { id:'dl4', num:25, en:'I agree that Riyadh Season has increased my interest in visiting other attractions in Riyadh.', ar:'أوافق على أن موسم الرياض قد زاد من اهتمامي بزيارة المعالم والمناطق الأخرى في الرياض.' },
+  { id:'dl1', num:21, en:'I would consider visiting Riyadh again in the future.', ar:'أفكر في زيارة الرياض مرة أخرى في المستقبل.' },
+  { id:'dl2', num:22, en:'I intend to attend future Riyadh Season events.', ar:'أنوي حضور فعاليات موسم الرياض القادمة.' },
+  { id:'dl3', num:23, en:'I would recommend Riyadh as a tourism destination to others.', ar:'سأوصي بالرياض كوجهة سياحية للآخرين.' },
+  { id:'dl4', num:24, en:'I would encourage friends and family to visit Riyadh Season.', ar:'سأشجع أصدقائي وعائلتي على زيارة موسم الرياض.' },
+  { id:'dl5', num:25, en:'I have a positive intention to revisit Riyadh based on this experience.', ar:'لديّ نية إيجابية لإعادة زيارة الرياض بناءً على هذه التجربة.' },
+  { id:'dl6', num:26, en:'I would share my positive experience with others.', ar:'سأشارك الآخرين تجربتي الإيجابية.' },
 ];
 
 const LIKERT_LABELS = {
@@ -533,19 +500,15 @@ const LIKERT_LABELS = {
   ar: ['أختلف بشدة','أختلف','محايد','أوافق','أوافق بشدة']
 };
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
 let currentLang = 'en';
 const responses = {};
-const TOTAL_REQUIRED = 2 + 4 + EQ_QUESTIONS.length + VS_QUESTIONS.length + DL_QUESTIONS.length;
 
-// ─── BUILD LIKERT QUESTIONS ──────────────────────────────────────────────────
 function buildLikertBlock(q) {
-  const labels = LIKERT_LABELS[currentLang];
   let btns = '';
   for (let v = 1; v <= 5; v++) {
     const sel = responses[q.id] == v ? ' selected' : '';
     btns += `<button type="button" class="likert-btn${sel}" data-qid="${q.id}" data-val="${v}" onclick="selectLikert(this,'${q.id}',${v})">
-      <span class="block text-base font-bold">${v}</span>
+      <span class="block" style="font-size:1rem;font-weight:700;">${v}</span>
       <span class="block text-xs leading-snug" data-en="${LIKERT_LABELS.en[v-1]}" data-ar="${LIKERT_LABELS.ar[v-1]}">${LIKERT_LABELS[currentLang][v-1]}</span>
     </button>`;
   }
@@ -562,7 +525,6 @@ function buildAll() {
   document.getElementById('dl-questions').innerHTML = DL_QUESTIONS.map(buildLikertBlock).join('');
 }
 
-// ─── INTERACTIONS ────────────────────────────────────────────────────────────
 function selectLikert(btn, qid, val) {
   document.querySelectorAll(`.likert-btn[data-qid="${qid}"]`).forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -573,9 +535,7 @@ function selectLikert(btn, qid, val) {
 }
 
 function selectDemo(label, name) {
-  document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-    r.closest('.demo-option').classList.remove('selected');
-  });
+  document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.closest('.demo-option').classList.remove('selected'));
   label.classList.add('selected');
   const radio = label.querySelector('input');
   if (radio) { radio.checked = true; responses[name] = radio.value; }
@@ -585,9 +545,7 @@ function selectDemo(label, name) {
 }
 
 function selectScreen(label, name, val) {
-  document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-    r.closest('.demo-option').classList.remove('selected');
-  });
+  document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.closest('.demo-option').classList.remove('selected'));
   label.classList.add('selected');
   const radio = label.querySelector('input');
   if (radio) radio.checked = true;
@@ -599,16 +557,21 @@ function selectScreen(label, name, val) {
   updateProgress();
 }
 
+function getAllKeys() {
+  return ['sc1','d1','d2','d3','d4','d5',
+    ...EQ_QUESTIONS.map(q=>q.id),
+    ...VS_QUESTIONS.map(q=>q.id),
+    ...DL_QUESTIONS.map(q=>q.id)];
+}
+
 function updateProgress() {
-  let filled = 0;
-  const allKeys = ['sc1','sc2','d1','d2','d3','d4',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id)];
-  allKeys.forEach(k => { if (responses[k]) filled++; });
+  const allKeys = getAllKeys();
+  let filled = allKeys.filter(k => responses[k]).length;
   const pct = Math.round((filled / allKeys.length) * 100);
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct + '%';
 }
 
-// ─── LANGUAGE TOGGLE ────────────────────────────────────────────────────────
 function toggleLang() {
   currentLang = currentLang === 'en' ? 'ar' : 'en';
   const html = document.getElementById('html-root');
@@ -618,9 +581,8 @@ function toggleLang() {
   document.querySelectorAll('[data-en]').forEach(el => {
     const txt = el.getAttribute('data-' + currentLang);
     if (txt) {
-      if (el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'SPAN' || el.tagName === 'BUTTON' || el.tagName === 'DIV') {
-        if (txt.includes('<br')) el.innerHTML = txt;
-        else el.textContent = txt;
+      if (['P','H1','H2','H3','SPAN','BUTTON','DIV'].includes(el.tagName)) {
+        if (txt.includes('<br')) el.innerHTML = txt; else el.textContent = txt;
       }
     }
   });
@@ -628,15 +590,13 @@ function toggleLang() {
   updateProgress();
 }
 
-// ─── SUBMIT ─────────────────────────────────────────────────────────────────
 function submitSurvey() {
-  if (responses.sc1 === 'no' || responses.sc2 === 'no') {
-    alert(currentLang === 'ar' ? 'عذراً، لا تستطيع المتابعة بناءً على إجاباتك على أسئلة الفرز.' : 'Sorry, you are not eligible to continue based on your screening answers.');
+  if (responses.sc1 === 'no') {
+    alert(currentLang === 'ar' ? 'عذراً، هذا الاستبيان مخصص لمن زار موسم الرياض.' : 'Sorry, this survey is for those who have visited Riyadh Season.');
     return;
   }
   let valid = true;
-  const allKeys = ['sc1','sc2','d1','d2','d3','d4',...EQ_QUESTIONS.map(q=>q.id),...VS_QUESTIONS.map(q=>q.id),...DL_QUESTIONS.map(q=>q.id)];
-  allKeys.forEach(k => {
+  getAllKeys().forEach(k => {
     if (!responses[k]) {
       const err = document.getElementById('err-' + k);
       if (err) err.classList.add('show');
@@ -651,24 +611,20 @@ function submitSurvey() {
   saveResponse();
   updateCounterBadge();
   document.getElementById('survey-form').style.display = 'none';
-  const ty = document.getElementById('thank-you');
-  ty.style.display = 'flex';
+  document.getElementById('thank-you').style.display = 'flex';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── STORAGE ─────────────────────────────────────────────────────────────────
 function saveResponse() {
   const all = loadResponses();
-  const entry = { timestamp: new Date().toLocaleString(), ...responses };
-  all.push(entry);
-  localStorage.setItem('riyadh_season_responses', JSON.stringify(all));
+  all.push({ timestamp: new Date().toLocaleString(), ...responses });
+  localStorage.setItem('riyadh_season_v2_responses', JSON.stringify(all));
 }
 function loadResponses() {
-  try { return JSON.parse(localStorage.getItem('riyadh_season_responses') || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem('riyadh_season_v2_responses') || '[]'); } catch { return []; }
 }
-function clearAllResponses() { localStorage.removeItem('riyadh_season_responses'); }
+function clearAllResponses() { localStorage.removeItem('riyadh_season_v2_responses'); }
 
-// ─── RESET ───────────────────────────────────────────────────────────────────
 function resetForm() {
   Object.keys(responses).forEach(k => delete responses[k]);
   document.querySelectorAll('.demo-option').forEach(l => l.classList.remove('selected'));
@@ -681,25 +637,22 @@ function resetForm() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── COUNTER ─────────────────────────────────────────────────────────────────
 function updateCounterBadge() {
   document.getElementById('response-count-badge').textContent = loadResponses().length;
 }
 
-// ─── DASHBOARD ───────────────────────────────────────────────────────────────
 function openDashboard() {
   const all = loadResponses();
   document.getElementById('dash-count').textContent = all.length;
   if (all.length > 0) {
-    const genders = {}, ages = {}, edu = {};
+    const genders = {}, ages = {};
     all.forEach(r => {
-      genders[r.d2] = (genders[r.d2] || 0) + 1;
-      ages[r.d1] = (ages[r.d1] || 0) + 1;
-      edu[r.d3] = (edu[r.d3] || 0) + 1;
+      genders[r.d1] = (genders[r.d1]||0)+1;
+      ages[r.d2] = (ages[r.d2]||0)+1;
     });
     const top = obj => Object.entries(obj).sort((a,b)=>b[1]-a[1])[0];
     const mean = keys => {
-      const vals = all.flatMap(r => keys.map(k => Number(r[k]))).filter(v => v > 0);
+      const vals = all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);
       return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 'N/A';
     };
     const eqAvg = mean(EQ_QUESTIONS.map(q=>q.id));
@@ -709,11 +662,11 @@ function openDashboard() {
     document.getElementById('stats-grid').innerHTML = `
       <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;">
         <p style="font-size:0.75rem;color:#6b7280;">Top Gender</p>
-        <p style="font-weight:700;color:#0d4f2e;">${tg ? tg[0]+' ('+tg[1]+')' : '—'}</p>
+        <p style="font-weight:700;color:#0d4f2e;">${tg?tg[0]+' ('+tg[1]+')':'—'}</p>
       </div>
       <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;">
         <p style="font-size:0.75rem;color:#6b7280;">Top Age Group</p>
-        <p style="font-weight:700;color:#0d4f2e;">${ta ? ta[0]+' ('+ta[1]+')' : '—'}</p>
+        <p style="font-weight:700;color:#0d4f2e;">${ta?ta[0]+' ('+ta[1]+')':'—'}</p>
       </div>
       <div style="background:#fefce8;border-radius:0.5rem;padding:0.75rem;text-align:center;">
         <p style="font-size:0.75rem;color:#6b7280;">Avg. Event Quality</p>
@@ -730,16 +683,13 @@ function openDashboard() {
     const recent = all.slice(-5).reverse();
     document.getElementById('recent-responses').innerHTML = `
       <p style="font-size:0.875rem;font-weight:600;color:#374151;margin-bottom:0.5rem;">Recent Responses (last ${recent.length}):</p>
-      <div style="overflow-x:auto">
-      <table class="resp-table">
+      <div style="overflow-x:auto"><table class="resp-table">
         <thead><tr><th>#</th><th>Time</th><th>Gender</th><th>Age</th><th>EQ Avg</th></tr></thead>
-        <tbody>
-          ${recent.map((r,i) => {
-            const vals = EQ_QUESTIONS.map(q=>Number(r[q.id])).filter(v=>v>0);
-            const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '—';
-            return `<tr><td>${all.length-i}</td><td>${r.timestamp}</td><td>${r.d2||'—'}</td><td>${r.d1||'—'}</td><td>${avg}</td></tr>`;
-          }).join('')}
-        </tbody>
+        <tbody>${recent.map((r,i)=>{
+          const vals=EQ_QUESTIONS.map(q=>Number(r[q.id])).filter(v=>v>0);
+          const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):'—';
+          return `<tr><td>${all.length-i}</td><td>${r.timestamp}</td><td>${r.d1||'—'}</td><td>${r.d2||'—'}</td><td>${avg}</td></tr>`;
+        }).join('')}</tbody>
       </table></div>`;
   } else {
     document.getElementById('stats-grid').innerHTML = '<p style="font-size:0.875rem;color:#9ca3af;grid-column:span 2;">No responses yet.</p>';
@@ -748,45 +698,41 @@ function openDashboard() {
   document.getElementById('dashboard').classList.add('open');
 }
 function closeDashboard() { document.getElementById('dashboard').classList.remove('open'); }
-document.getElementById('dashboard').addEventListener('click', function(e) { if (e.target === this) closeDashboard(); });
+document.getElementById('dashboard').addEventListener('click', function(e){ if(e.target===this) closeDashboard(); });
 
-// ─── EXPORT ──────────────────────────────────────────────────────────────────
 function exportToExcel() {
   const all = loadResponses();
   if (!all.length) { alert('No responses to export yet.'); return; }
-  const headers = ['Timestamp','Age','Gender','Education','Visit Count',
-    ...EQ_QUESTIONS.map((q,i)=>`Q${q.num}`),
-    ...VS_QUESTIONS.map((q,i)=>`Q${q.num}`),
-    ...DL_QUESTIONS.map((q,i)=>`Q${q.num}`)];
-  const rows = all.map(r => [
-    r.timestamp, r.d1, r.d2, r.d3, r.d4,
+  const headers = ['Timestamp','Gender','Age','Nationality','Education','Frequency',
+    ...EQ_QUESTIONS.map(q=>`EQ${q.id.replace('eq','')}`),
+    ...VS_QUESTIONS.map(q=>`VS${q.id.replace('vs','')}`),
+    ...DL_QUESTIONS.map(q=>`DL${q.id.replace('dl','')}`)];
+  const rows = all.map(r=>[
+    r.timestamp,r.d1,r.d2,r.d3,r.d4,r.d5,
     ...EQ_QUESTIONS.map(q=>r[q.id]||''),
     ...VS_QUESTIONS.map(q=>r[q.id]||''),
     ...DL_QUESTIONS.map(q=>r[q.id]||''),
   ]);
-  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-  ws['!cols'] = [{wch:22},{wch:10},{wch:10},{wch:14},{wch:14},...Array(EQ_QUESTIONS.length+VS_QUESTIONS.length+DL_QUESTIONS.length).fill({wch:6})];
+  const ws = XLSX.utils.aoa_to_sheet([headers,...rows]);
+  ws['!cols']=[{wch:22},{wch:14},{wch:10},{wch:12},{wch:18},{wch:14},...Array(EQ_QUESTIONS.length+VS_QUESTIONS.length+DL_QUESTIONS.length).fill({wch:6})];
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Survey Responses');
-  const calcMean = keys => {
-    const vals = all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);
-    return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 'N/A';
-  };
-  const summary = [
+  XLSX.utils.book_append_sheet(wb,ws,'Survey Responses');
+  const calcMean=keys=>{const vals=all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);return vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):'N/A';};
+  const summary=[
     ['Riyadh Season Survey — Summary'],
     ['Topic','The Impact of Riyadh Season Event Quality on Visitor Satisfaction and Destination Loyalty'],
-    ['Export Date', new Date().toLocaleString()],
-    ['Total Responses', all.length],
+    ['Export Date',new Date().toLocaleString()],
+    ['Total Responses',all.length],
     [],
     ['Variable','Items','Average Score'],
-    ['Event Quality (EQ)', `Q${EQ_QUESTIONS[0].num}–Q${EQ_QUESTIONS[EQ_QUESTIONS.length-1].num}`, calcMean(EQ_QUESTIONS.map(q=>q.id))],
-    ['Visitor Satisfaction (VS)', `Q${VS_QUESTIONS[0].num}–Q${VS_QUESTIONS[VS_QUESTIONS.length-1].num}`, calcMean(VS_QUESTIONS.map(q=>q.id))],
-    ['Destination Loyalty (DL)', `Q${DL_QUESTIONS[0].num}–Q${DL_QUESTIONS[DL_QUESTIONS.length-1].num}`, calcMean(DL_QUESTIONS.map(q=>q.id))],
+    ['Event Quality (EQ)',`EQ1–EQ${EQ_QUESTIONS.length}`,calcMean(EQ_QUESTIONS.map(q=>q.id))],
+    ['Visitor Satisfaction (VS)',`VS1–VS${VS_QUESTIONS.length}`,calcMean(VS_QUESTIONS.map(q=>q.id))],
+    ['Destination Loyalty (DL)',`DL1–DL${DL_QUESTIONS.length}`,calcMean(DL_QUESTIONS.map(q=>q.id))],
   ];
-  const ws2 = XLSX.utils.aoa_to_sheet(summary);
-  ws2['!cols'] = [{wch:30},{wch:40},{wch:16}];
-  XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
-  XLSX.writeFile(wb, `RiyadhSeason_Survey_${new Date().toISOString().slice(0,10)}.xlsx`);
+  const ws2=XLSX.utils.aoa_to_sheet(summary);
+  ws2['!cols']=[{wch:30},{wch:50},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Summary');
+  XLSX.writeFile(wb,`RiyadhSeason_Survey_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
 function clearResponses() {
@@ -797,7 +743,6 @@ function clearResponses() {
   setTimeout(openDashboard, 100);
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
 buildAll();
 updateCounterBadge();
 </script>
