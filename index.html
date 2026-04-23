@@ -921,11 +921,14 @@ async function exportToExcel() {
 async function clearResponses() {
   if (!confirm('Are you sure you want to delete ALL responses from the database? This cannot be undone.')) return;
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/' + TABLE_NAME + '?id=gte.0', {
+   
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + TABLE_NAME + '?id=not.is.null', {
       method: 'DELETE',
       headers: sbHeaders()
     });
+    
     if (!res.ok) throw new Error(await res.text());
+    
     closeDashboard();
     setTimeout(openDashboard, 100);
     updateCounterBadge();
