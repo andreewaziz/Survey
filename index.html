@@ -138,7 +138,8 @@
       cursor: pointer; transition: background 0.2s, transform 0.1s;
       box-shadow: 0 4px 14px rgba(13,79,46,0.25);
     }
-    #submit-btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+    #submit-btn:hover:not(:disabled) { background: var(--primary-light); transform: translateY(-1px); }
+    #submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
     #thank-you { display: none; }
     #thank-you.show { display: flex; }
     .error-msg { color: #dc2626; font-size: 0.78rem; margin-top: 0.25rem; display: none; }
@@ -199,6 +200,23 @@
       color: #b91c1c; font-weight: 600; font-size: 0.9rem;
       margin-top: 0.5rem;
     }
+    .db-loading {
+      text-align: center; padding: 1.5rem;
+      color: var(--muted); font-size: 0.9rem;
+    }
+    .db-error {
+      background: #fef2f2; border: 1px solid #fca5a5;
+      border-radius: 0.5rem; padding: 0.75rem 1rem;
+      color: #b91c1c; font-size: 0.82rem; margin-top: 0.5rem;
+    }
+    /* config notice */
+    #config-notice {
+      display: none;
+      background: #fffbeb; border: 2px solid #f59e0b;
+      border-radius: 0.75rem; padding: 1rem 1.25rem;
+      color: #92400e; font-size: 0.85rem; margin-bottom: 1.5rem;
+    }
+    #config-notice.show { display: block; }
     .max-w-3xl { max-width: 48rem; }
     .mx-auto { margin-left: auto; margin-right: auto; }
     .px-4 { padding-left: 1rem; padding-right: 1rem; }
@@ -214,7 +232,6 @@
     .mt-3 { margin-top: 0.75rem; }
     .mt-4 { margin-top: 1rem; }
     .mt-6 { margin-top: 1.5rem; }
-    .ml-1 { margin-left: 0.25rem; }
     .text-xs { font-size: 0.75rem; line-height: 1rem; }
     .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
     .text-base { font-size: 1rem; line-height: 1.5rem; }
@@ -238,7 +255,6 @@
     .w-full { width: 100%; }
     .rounded-full { border-radius: 9999px; }
     .bg-gray-200 { background-color: #e5e7eb; }
-    .h-2\.5 { height: 0.625rem; }
     .opacity-75 { opacity: 0.75; }
     .leading-snug { line-height: 1.375; }
     .leading-relaxed { line-height: 1.625; }
@@ -258,23 +274,23 @@
 
   <button id="admin-toggle" onclick="openDashboard()">
     📊 <span id="admin-btn-label">Responses</span>
-    <span id="response-count-badge" style="background:#fff;color:#a16207;border-radius:9999px;padding:0.125rem 0.5rem;font-size:0.75rem;font-weight:700;margin-left:0.25rem;">0</span>
+    <span id="response-count-badge" style="background:#fff;color:#a16207;border-radius:9999px;padding:0.125rem 0.5rem;font-size:0.75rem;font-weight:700;margin-left:0.25rem;">…</span>
   </button>
 
   <div id="dashboard" role="dialog" aria-modal="true">
     <div id="dashboard-panel">
       <button id="close-dashboard" onclick="closeDashboard()">✕</button>
       <h2 class="text-xl font-bold mb-1" style="color:#0d4f2e;">📊 Survey Responses Dashboard</h2>
-      <p class="text-sm text-gray-500 mb-4">All responses are saved in this browser.</p>
+      <p class="text-sm text-gray-500 mb-4">Responses are stored in Supabase (shared across all devices).</p>
       <div class="flex items-center gap-3 mb-5">
         <div class="counter-badge">
           <span>📝</span>
-          <span id="dash-count">0</span>
+          <span id="dash-count">…</span>
           <span id="dash-count-label">Responses Collected</span>
         </div>
       </div>
       <div id="stats-grid" class="grid grid-cols-2 gap-3 mb-5">
-        <p class="text-sm text-gray-500 col-span-2">No responses yet.</p>
+        <div class="db-loading col-span-2">Loading responses…</div>
       </div>
       <div class="flex gap-3 flex-wrap mb-5">
         <button id="export-btn" onclick="exportToExcel()">📥 Export to Excel (.xlsx)</button>
@@ -285,6 +301,11 @@
   </div>
 
   <div class="max-w-3xl mx-auto px-4 py-8">
+
+    <!-- Config notice shown if credentials not set -->
+    <div id="config-notice">
+      ⚠️ <strong>Setup Required:</strong> Open this file and replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code> with your Supabase project credentials. See the README for instructions.
+    </div>
 
     <div style="text-align:center;margin-bottom:2rem;">
       <img src="KSU.png" alt="KSU Logo" style="max-width:300px;height:auto;opacity:0.9;">
@@ -309,7 +330,7 @@
         <span class="text-xs font-semibold text-gray-500" data-en="Survey Progress" data-ar="تقدم الاستبيان">Survey Progress</span>
         <span class="text-xs font-bold" style="color:#1a7a47;" id="progress-pct">0%</span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-2\.5">
+      <div class="w-full bg-gray-200 rounded-full" style="height:0.625rem;">
         <div id="progress-bar" style="width:0%;background:linear-gradient(90deg,#0d4f2e,#c9a84c);height:0.625rem;border-radius:9999px;"></div>
       </div>
     </div>
@@ -467,7 +488,18 @@
   </div>
 
 <script>
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  ⚙️  SUPABASE CONFIG  — replace with your project values
+//  Get them from: https://supabase.com → Project Settings → API
+// ══════════════════════════════════════════════════════════════
+const SUPABASE_URL      = 'YOUR_SUPABASE_URL';       // e.g. https://abcdefgh.supabase.co
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';  // long string starting with "eyJ…"
+const TABLE_NAME        = 'riyadh_season_responses';
+// ══════════════════════════════════════════════════════════════
+
+const configOK = SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+
+// ─── QUESTION DATA ───────────────────────────────────────────
 const EQ_QUESTIONS = [
   { id:'eq1', num:7,  en:'The overall organization of Riyadh Season events is highly professional.', ar:'التنظيم العام لفعاليات موسم الرياض احترافي للغاية.' },
   { id:'eq2', num:8,  en:'The variety of activities offered is diverse and engaging.', ar:'تشكيلة الأنشطة المقدمة متنوعة وجذابة.' },
@@ -503,6 +535,44 @@ const LIKERT_LABELS = {
 let currentLang = 'en';
 const responses = {};
 
+// ─── SUPABASE API HELPERS ────────────────────────────────────
+const sbHeaders = () => ({
+  'Content-Type': 'application/json',
+  'apikey': eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzaWd6Z3JwZG5scWhrd3prZXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTAyNDYsImV4cCI6MjA5MjUyNjI0Nn0.za7i0DhkN5gh5WcAjkelWCSOHn026m-L_YCwzMO8rCk,
+  'Authorization': `Bearer ${eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzaWd6Z3JwZG5scWhrd3prZXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTAyNDYsImV4cCI6MjA5MjUyNjI0Nn0.za7i0DhkN5gh5WcAjkelWCSOHn026m-L_YCwzMO8rCk}`
+});
+
+async function sbInsert(row) {
+  const res = await fetch(`${https://ssigzgrpdnlqhkwzkesl.supabase.co/rest/v1/}/rest/v1/${TABLE_NAME}`, {
+    method: 'POST',
+    headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  if (!res.ok) throw new Error(`Insert failed: ${res.status} ${await res.text()}`);
+}
+
+async function sbFetchAll() {
+  const res = await fetch(
+    `${https://ssigzgrpdnlqhkwzkesl.supabase.co/rest/v1/}/rest/v1/${TABLE_NAME}?select=*&order=created_at.asc`,
+    { headers: sbHeaders() }
+  );
+  if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+  const rows = await res.json();
+  // Flatten: merge top-level fields + data jsonb
+  return rows.map(r => ({ timestamp: r.ts, ...r.data }));
+}
+
+async function sbCount() {
+  const res = await fetch(
+    `${https://ssigzgrpdnlqhkwzkesl.supabase.co/rest/v1/}/rest/v1/${TABLE_NAME}?select=id`,
+    { headers: { ...sbHeaders(), 'Prefer': 'count=exact' } }
+  );
+  if (!res.ok) return '?';
+  const range = res.headers.get('content-range'); // e.g. "0-99/100"
+  return range ? range.split('/')[1] : '?';
+}
+
+// ─── UI BUILDERS ─────────────────────────────────────────────
 function buildLikertBlock(q) {
   let btns = '';
   for (let v = 1; v <= 5; v++) {
@@ -525,6 +595,7 @@ function buildAll() {
   document.getElementById('dl-questions').innerHTML = DL_QUESTIONS.map(buildLikertBlock).join('');
 }
 
+// ─── INTERACTION ──────────────────────────────────────────────
 function selectLikert(btn, qid, val) {
   document.querySelectorAll(`.likert-btn[data-qid="${qid}"]`).forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -566,7 +637,7 @@ function getAllKeys() {
 
 function updateProgress() {
   const allKeys = getAllKeys();
-  let filled = allKeys.filter(k => responses[k]).length;
+  const filled = allKeys.filter(k => responses[k]).length;
   const pct = Math.round((filled / allKeys.length) * 100);
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct + '%';
@@ -590,7 +661,8 @@ function toggleLang() {
   updateProgress();
 }
 
-function submitSurvey() {
+// ─── SUBMIT ───────────────────────────────────────────────────
+async function submitSurvey() {
   if (responses.sc1 === 'no') {
     alert(currentLang === 'ar' ? 'عذراً، هذا الاستبيان مخصص لمن زار موسم الرياض.' : 'Sorry, this survey is for those who have visited Riyadh Season.');
     return;
@@ -608,23 +680,32 @@ function submitSurvey() {
     if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
-  saveResponse();
-  updateCounterBadge();
-  document.getElementById('survey-form').style.display = 'none';
-  document.getElementById('thank-you').style.display = 'flex';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (!configOK) {
+    alert('⚠️ Supabase is not configured. Please update SUPABASE_URL and SUPABASE_ANON_KEY in the HTML file.');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = currentLang === 'ar' ? 'جارٍ الإرسال…' : 'Submitting…';
+
+  try {
+    await sbInsert({ ts: new Date().toLocaleString(), data: { ...responses } });
+    document.getElementById('survey-form').style.display = 'none';
+    document.getElementById('thank-you').style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateCounterBadge();
+  } catch (err) {
+    console.error(err);
+    alert((currentLang === 'ar' ? 'حدث خطأ أثناء الحفظ:\n' : 'Error saving response:\n') + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = currentLang === 'ar' ? 'إرسال الاستبيان' : 'Submit Survey';
+  }
 }
 
-function saveResponse() {
-  const all = loadResponses();
-  all.push({ timestamp: new Date().toLocaleString(), ...responses });
-  localStorage.setItem('riyadh_season_v2_responses', JSON.stringify(all));
-}
-function loadResponses() {
-  try { return JSON.parse(localStorage.getItem('riyadh_season_v2_responses') || '[]'); } catch { return []; }
-}
-function clearAllResponses() { localStorage.removeItem('riyadh_season_v2_responses'); }
-
+// ─── RESET ────────────────────────────────────────────────────
 function resetForm() {
   Object.keys(responses).forEach(k => delete responses[k]);
   document.querySelectorAll('.demo-option').forEach(l => l.classList.remove('selected'));
@@ -637,36 +718,66 @@ function resetForm() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function updateCounterBadge() {
-  document.getElementById('response-count-badge').textContent = loadResponses().length;
+// ─── COUNTER BADGE ────────────────────────────────────────────
+async function updateCounterBadge() {
+  if (!configOK) { document.getElementById('response-count-badge').textContent = '⚙️'; return; }
+  try {
+    const count = await sbCount();
+    document.getElementById('response-count-badge').textContent = count;
+  } catch {
+    document.getElementById('response-count-badge').textContent = '?';
+  }
 }
 
-function openDashboard() {
-  const all = loadResponses();
-  document.getElementById('dash-count').textContent = all.length;
-  if (all.length > 0) {
+// ─── DASHBOARD ────────────────────────────────────────────────
+async function openDashboard() {
+  document.getElementById('dashboard').classList.add('open');
+  document.getElementById('dash-count').textContent = '…';
+  document.getElementById('stats-grid').innerHTML = '<div class="db-loading col-span-2">Loading from database…</div>';
+  document.getElementById('recent-responses').innerHTML = '';
+
+  if (!configOK) {
+    document.getElementById('dash-count').textContent = '⚙️';
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="db-error col-span-2">
+        ⚙️ Supabase not configured. Edit the HTML file and replace<br>
+        <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>.
+      </div>`;
+    return;
+  }
+
+  try {
+    const all = await sbFetchAll();
+    document.getElementById('dash-count').textContent = all.length;
+
+    if (all.length === 0) {
+      document.getElementById('stats-grid').innerHTML = '<p style="font-size:0.875rem;color:#9ca3af;grid-column:span 2;">No responses yet.</p>';
+      return;
+    }
+
     const genders = {}, ages = {};
     all.forEach(r => {
       genders[r.d1] = (genders[r.d1]||0)+1;
-      ages[r.d2] = (ages[r.d2]||0)+1;
+      ages[r.d2]   = (ages[r.d2]||0)+1;
     });
     const top = obj => Object.entries(obj).sort((a,b)=>b[1]-a[1])[0];
     const mean = keys => {
-      const vals = all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);
+      const vals = all.flatMap(r => keys.map(k => Number(r[k]))).filter(v => v > 0);
       return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 'N/A';
     };
     const eqAvg = mean(EQ_QUESTIONS.map(q=>q.id));
     const vsAvg = mean(VS_QUESTIONS.map(q=>q.id));
     const dlAvg = mean(DL_QUESTIONS.map(q=>q.id));
     const tg = top(genders), ta = top(ages);
+
     document.getElementById('stats-grid').innerHTML = `
       <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;">
         <p style="font-size:0.75rem;color:#6b7280;">Top Gender</p>
-        <p style="font-weight:700;color:#0d4f2e;">${tg?tg[0]+' ('+tg[1]+')':'—'}</p>
+        <p style="font-weight:700;color:#0d4f2e;">${tg ? tg[0]+' ('+tg[1]+')' : '—'}</p>
       </div>
       <div style="background:#f0fdf4;border-radius:0.5rem;padding:0.75rem;text-align:center;">
         <p style="font-size:0.75rem;color:#6b7280;">Top Age Group</p>
-        <p style="font-weight:700;color:#0d4f2e;">${ta?ta[0]+' ('+ta[1]+')':'—'}</p>
+        <p style="font-weight:700;color:#0d4f2e;">${ta ? ta[0]+' ('+ta[1]+')' : '—'}</p>
       </div>
       <div style="background:#fefce8;border-radius:0.5rem;padding:0.75rem;text-align:center;">
         <p style="font-size:0.75rem;color:#6b7280;">Avg. Event Quality</p>
@@ -680,69 +791,104 @@ function openDashboard() {
         <p style="font-size:0.75rem;color:#6b7280;">Avg. Destination Loyalty</p>
         <p style="font-weight:700;color:#0d4f2e;">${dlAvg} / 5</p>
       </div>`;
+
     const recent = all.slice(-5).reverse();
     document.getElementById('recent-responses').innerHTML = `
       <p style="font-size:0.875rem;font-weight:600;color:#374151;margin-bottom:0.5rem;">Recent Responses (last ${recent.length}):</p>
       <div style="overflow-x:auto"><table class="resp-table">
         <thead><tr><th>#</th><th>Time</th><th>Gender</th><th>Age</th><th>EQ Avg</th></tr></thead>
         <tbody>${recent.map((r,i)=>{
-          const vals=EQ_QUESTIONS.map(q=>Number(r[q.id])).filter(v=>v>0);
-          const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):'—';
-          return `<tr><td>${all.length-i}</td><td>${r.timestamp}</td><td>${r.d1||'—'}</td><td>${r.d2||'—'}</td><td>${avg}</td></tr>`;
+          const vals = EQ_QUESTIONS.map(q=>Number(r[q.id])).filter(v=>v>0);
+          const avg  = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '—';
+          return `<tr><td>${all.length-i}</td><td>${r.timestamp||'—'}</td><td>${r.d1||'—'}</td><td>${r.d2||'—'}</td><td>${avg}</td></tr>`;
         }).join('')}</tbody>
       </table></div>`;
-  } else {
-    document.getElementById('stats-grid').innerHTML = '<p style="font-size:0.875rem;color:#9ca3af;grid-column:span 2;">No responses yet.</p>';
-    document.getElementById('recent-responses').innerHTML = '';
+
+  } catch (err) {
+    document.getElementById('stats-grid').innerHTML = `<div class="db-error col-span-2">Error loading data: ${err.message}</div>`;
   }
-  document.getElementById('dashboard').classList.add('open');
 }
+
 function closeDashboard() { document.getElementById('dashboard').classList.remove('open'); }
 document.getElementById('dashboard').addEventListener('click', function(e){ if(e.target===this) closeDashboard(); });
 
-function exportToExcel() {
-  const all = loadResponses();
-  if (!all.length) { alert('No responses to export yet.'); return; }
-  const headers = ['Timestamp','Gender','Age','Nationality','Education','Frequency',
-    ...EQ_QUESTIONS.map(q=>`EQ${q.id.replace('eq','')}`),
-    ...VS_QUESTIONS.map(q=>`VS${q.id.replace('vs','')}`),
-    ...DL_QUESTIONS.map(q=>`DL${q.id.replace('dl','')}`)];
-  const rows = all.map(r=>[
-    r.timestamp,r.d1,r.d2,r.d3,r.d4,r.d5,
-    ...EQ_QUESTIONS.map(q=>r[q.id]||''),
-    ...VS_QUESTIONS.map(q=>r[q.id]||''),
-    ...DL_QUESTIONS.map(q=>r[q.id]||''),
-  ]);
-  const ws = XLSX.utils.aoa_to_sheet([headers,...rows]);
-  ws['!cols']=[{wch:22},{wch:14},{wch:10},{wch:12},{wch:18},{wch:14},...Array(EQ_QUESTIONS.length+VS_QUESTIONS.length+DL_QUESTIONS.length).fill({wch:6})];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Survey Responses');
-  const calcMean=keys=>{const vals=all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);return vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):'N/A';};
-  const summary=[
-    ['Riyadh Season Survey — Summary'],
-    ['Topic','The Impact of Riyadh Season Event Quality on Visitor Satisfaction and Destination Loyalty'],
-    ['Export Date',new Date().toLocaleString()],
-    ['Total Responses',all.length],
-    [],
-    ['Variable','Items','Average Score'],
-    ['Event Quality (EQ)',`EQ1–EQ${EQ_QUESTIONS.length}`,calcMean(EQ_QUESTIONS.map(q=>q.id))],
-    ['Visitor Satisfaction (VS)',`VS1–VS${VS_QUESTIONS.length}`,calcMean(VS_QUESTIONS.map(q=>q.id))],
-    ['Destination Loyalty (DL)',`DL1–DL${DL_QUESTIONS.length}`,calcMean(DL_QUESTIONS.map(q=>q.id))],
-  ];
-  const ws2=XLSX.utils.aoa_to_sheet(summary);
-  ws2['!cols']=[{wch:30},{wch:50},{wch:16}];
-  XLSX.utils.book_append_sheet(wb,ws2,'Summary');
-  XLSX.writeFile(wb,`RiyadhSeason_Survey_${new Date().toISOString().slice(0,10)}.xlsx`);
+// ─── EXPORT ───────────────────────────────────────────────────
+async function exportToExcel() {
+  if (!configOK) { alert('Supabase not configured.'); return; }
+  const exportBtn = document.getElementById('export-btn');
+  exportBtn.textContent = '⏳ Loading…';
+  exportBtn.disabled = true;
+
+  try {
+    const all = await sbFetchAll();
+    if (!all.length) { alert('No responses to export yet.'); return; }
+
+    const headers = ['Timestamp','Gender','Age','Nationality','Education','Frequency',
+      ...EQ_QUESTIONS.map(q=>`EQ${q.id.replace('eq','')}`),
+      ...VS_QUESTIONS.map(q=>`VS${q.id.replace('vs','')}`),
+      ...DL_QUESTIONS.map(q=>`DL${q.id.replace('dl','')}`)];
+    const rows = all.map(r=>[
+      r.timestamp, r.d1, r.d2, r.d3, r.d4, r.d5,
+      ...EQ_QUESTIONS.map(q=>r[q.id]||''),
+      ...VS_QUESTIONS.map(q=>r[q.id]||''),
+      ...DL_QUESTIONS.map(q=>r[q.id]||''),
+    ]);
+    const ws = XLSX.utils.aoa_to_sheet([headers,...rows]);
+    ws['!cols']=[{wch:22},{wch:14},{wch:10},{wch:12},{wch:18},{wch:14},
+      ...Array(EQ_QUESTIONS.length+VS_QUESTIONS.length+DL_QUESTIONS.length).fill({wch:6})];
+
+    const calcMean = keys => {
+      const vals = all.flatMap(r=>keys.map(k=>Number(r[k]))).filter(v=>v>0);
+      return vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):'N/A';
+    };
+    const summary = [
+      ['Riyadh Season Survey — Summary'],
+      ['Topic','The Impact of Riyadh Season Event Quality on Visitor Satisfaction and Destination Loyalty'],
+      ['Export Date', new Date().toLocaleString()],
+      ['Total Responses', all.length],
+      [],
+      ['Variable','Items','Average Score'],
+      ['Event Quality (EQ)',`EQ1–EQ${EQ_QUESTIONS.length}`,calcMean(EQ_QUESTIONS.map(q=>q.id))],
+      ['Visitor Satisfaction (VS)',`VS1–VS${VS_QUESTIONS.length}`,calcMean(VS_QUESTIONS.map(q=>q.id))],
+      ['Destination Loyalty (DL)',`DL1–DL${DL_QUESTIONS.length}`,calcMean(DL_QUESTIONS.map(q=>q.id))],
+    ];
+    const ws2 = XLSX.utils.aoa_to_sheet(summary);
+    ws2['!cols'] = [{wch:30},{wch:55},{wch:16}];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Survey Responses');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+    XLSX.writeFile(wb, `RiyadhSeason_Survey_${new Date().toISOString().slice(0,10)}.xlsx`);
+  } catch(err) {
+    alert('Export error: ' + err.message);
+  } finally {
+    exportBtn.textContent = '📥 Export to Excel (.xlsx)';
+    exportBtn.disabled = false;
+  }
 }
 
-function clearResponses() {
-  if (!confirm('Are you sure you want to delete ALL responses? This cannot be undone.')) return;
-  clearAllResponses();
-  updateCounterBadge();
-  closeDashboard();
-  setTimeout(openDashboard, 100);
+// ─── CLEAR ────────────────────────────────────────────────────
+async function clearResponses() {
+  if (!confirm('Are you sure you want to delete ALL responses from the database? This cannot be undone.')) return;
+  if (!configOK) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=gte.0`, {
+      method: 'DELETE',
+      headers: sbHeaders()
+    });
+    if (!res.ok) throw new Error(await res.text());
+    closeDashboard();
+    setTimeout(openDashboard, 100);
+    updateCounterBadge();
+  } catch(err) {
+    alert('Error clearing: ' + err.message);
+  }
 }
 
+// ─── INIT ─────────────────────────────────────────────────────
+if (!configOK) {
+  document.getElementById('config-notice').classList.add('show');
+}
 buildAll();
 updateCounterBadge();
 </script>
