@@ -84,6 +84,49 @@
       display: flex; align-items: center; gap: 0.4rem;
     }
     #admin-toggle:hover { background: #a07820; }
+
+    /* ── PASSWORD MODAL ─────────────────────────── */
+    #pw-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.6);
+      align-items: center; justify-content: center;
+    }
+    #pw-modal.open { display: flex; }
+    #pw-panel {
+      background: #fff; border-radius: 1.2rem;
+      padding: 2rem; width: 90%; max-width: 360px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    #pw-panel h3 { color: #0d4f2e; font-size: 1.1rem; margin: 0 0 0.5rem; }
+    #pw-panel p  { color: #6b7280; font-size: 0.82rem; margin: 0 0 1.25rem; }
+    #pw-input {
+      width: 100%; padding: 0.65rem 1rem;
+      border: 2px solid #e5e7eb; border-radius: 0.6rem;
+      font-size: 1rem; outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 0.75rem;
+    }
+    #pw-input:focus { border-color: #0d4f2e; }
+    #pw-error { color: #dc2626; font-size: 0.8rem; margin-bottom: 0.75rem; display: none; }
+    #pw-submit {
+      width: 100%; padding: 0.7rem;
+      background: #0d4f2e; color: #fff;
+      border: none; border-radius: 0.6rem;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+      margin-bottom: 0.5rem;
+    }
+    #pw-submit:hover { background: #1a7a47; }
+    #pw-cancel {
+      width: 100%; padding: 0.5rem;
+      background: transparent; color: #6b7280;
+      border: none; font-size: 0.85rem;
+      cursor: pointer;
+    }
+    #pw-cancel:hover { color: #374151; }
+
     #dashboard {
       display: none;
       position: fixed; inset: 0; z-index: 200;
@@ -209,14 +252,6 @@
       border-radius: 0.5rem; padding: 0.75rem 1rem;
       color: #b91c1c; font-size: 0.82rem; margin-top: 0.5rem;
     }
-    /* config notice */
-    #config-notice {
-      display: none;
-      background: #fffbeb; border: 2px solid #f59e0b;
-      border-radius: 0.75rem; padding: 1rem 1.25rem;
-      color: #92400e; font-size: 0.85rem; margin-bottom: 1.5rem;
-    }
-    #config-notice.show { display: block; }
     .max-w-3xl { max-width: 48rem; }
     .mx-auto { margin-left: auto; margin-right: auto; }
     .px-4 { padding-left: 1rem; padding-right: 1rem; }
@@ -272,10 +307,22 @@
 
   <button id="lang-toggle" onclick="toggleLang()">عربي 🌐</button>
 
-  <button id="admin-toggle" onclick="openDashboard()">
+  <button id="admin-toggle" onclick="checkAdminPassword()">
     📊 <span id="admin-btn-label">Responses</span>
     <span id="response-count-badge" style="background:#fff;color:#a16207;border-radius:9999px;padding:0.125rem 0.5rem;font-size:0.75rem;font-weight:700;margin-left:0.25rem;">…</span>
   </button>
+
+  <!-- ── PASSWORD MODAL ──────────────────────────────── -->
+  <div id="pw-modal">
+    <div id="pw-panel">
+      <h3>🔐 Admin Access</h3>
+      <p>Enter your admin password to view the dashboard</p>
+      <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')submitPassword()">
+      <div id="pw-error">Incorrect password. Try again.</div>
+      <button id="pw-submit" onclick="submitPassword()">Unlock Dashboard</button>
+      <button id="pw-cancel" onclick="closePwModal()">Cancel</button>
+    </div>
+  </div>
 
   <div id="dashboard" role="dialog" aria-modal="true">
     <div id="dashboard-panel">
@@ -301,11 +348,6 @@
   </div>
 
   <div class="max-w-3xl mx-auto px-4 py-8">
-
-    <!-- Config notice shown if credentials not set -->
-    <div id="config-notice">
-      ⚠️ <strong>Setup Required:</strong> Open this file and replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code> with your Supabase project credentials. See the README for instructions.
-    </div>
 
     <div style="text-align:center;margin-bottom:2rem;">
       <img src="KSU.png" alt="KSU Logo" style="max-width:300px;height:auto;opacity:0.9;">
@@ -387,7 +429,6 @@
            data-en="Please select the most appropriate option."
            data-ar="يرجى اختيار الخيار الأنسب.">Please select the most appropriate option.</p>
 
-        <!-- Gender -->
         <div class="mb-5" id="wrap-d1">
           <p class="font-semibold text-gray-800 mb-2" data-en="2. Gender" data-ar="2. الجنس">2. Gender</p>
           <label class="demo-option" onclick="selectDemo(this,'d1')"><input type="radio" name="d1" value="Male"> <span data-en="Male" data-ar="ذكر">Male</span></label>
@@ -396,7 +437,6 @@
           <p class="error-msg" id="err-d1" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
-        <!-- Age -->
         <div class="mb-5" id="wrap-d2">
           <p class="font-semibold text-gray-800 mb-2" data-en="3. Age" data-ar="3. العمر">3. Age</p>
           <label class="demo-option" onclick="selectDemo(this,'d2')"><input type="radio" name="d2" value="Under 20"> <span data-en="Under 20" data-ar="أقل من 20">Under 20</span></label>
@@ -407,7 +447,6 @@
           <p class="error-msg" id="err-d2" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
-        <!-- Nationality -->
         <div class="mb-5" id="wrap-d3">
           <p class="font-semibold text-gray-800 mb-2" data-en="4. Nationality" data-ar="4. الجنسية">4. Nationality</p>
           <label class="demo-option" onclick="selectDemo(this,'d3')"><input type="radio" name="d3" value="Saudi"> <span data-en="Saudi" data-ar="سعودي">Saudi</span></label>
@@ -415,7 +454,6 @@
           <p class="error-msg" id="err-d3" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
-        <!-- Education -->
         <div class="mb-5" id="wrap-d4">
           <p class="font-semibold text-gray-800 mb-2" data-en="5. Educational Level" data-ar="5. المستوى التعليمي">5. Educational Level</p>
           <label class="demo-option" onclick="selectDemo(this,'d4')"><input type="radio" name="d4" value="High school or below"> <span data-en="High school or below" data-ar="ثانوية عامة أو أقل">High school or below</span></label>
@@ -426,7 +464,6 @@
           <p class="error-msg" id="err-d4" data-en="Please select an option." data-ar="يرجى اختيار إجابة.">Please select an option.</p>
         </div>
 
-        <!-- Frequency -->
         <div class="mb-5" id="wrap-d5">
           <p class="font-semibold text-gray-800 mb-2" data-en="6. Frequency of attending Riyadh Season events" data-ar="6. تكرار حضور فعاليات موسم الرياض">6. Frequency of attending Riyadh Season events</p>
           <label class="demo-option" onclick="selectDemo(this,'d5')"><input type="radio" name="d5" value="First time"> <span data-en="First time" data-ar="أول مرة">First time</span></label>
@@ -489,17 +526,84 @@
 
 <script>
 // ══════════════════════════════════════════════════════════════
-//  ⚙️  SUPABASE CONFIG  — replace with your project values
-//  Get them from: https://supabase.com → Project Settings → API
+//  ⚙️  SUPABASE CONFIG
+//  Get from: https://supabase.com → Project Settings → API
 // ══════════════════════════════════════════════════════════════
-const SUPABASE_URL      = 'YOUR_SUPABASE_URL';       // e.g. https://abcdefgh.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';  // long string starting with "eyJ…"
+const SUPABASE_URL      = 'https://ssigzgrpdnlqhkwzkesl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzaWd6Z3JwZG5scWhrd3prZXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTAyNDYsImV4cCI6MjA5MjUyNjI0Nn0.za7i0DhkN5gh5WcAjkelWCSOHn026m-L_YCwzMO8rCk';
 const TABLE_NAME        = 'riyadh_season_responses';
+
+// ══════════════════════════════════════════════════════════════
+//  🔐  ADMIN PASSWORD  — change this to your own password
+// ══════════════════════════════════════════════════════════════
+const ADMIN_PASSWORD = 'Admin@2025';
 // ══════════════════════════════════════════════════════════════
 
-const configOK = SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+let adminUnlocked = false;
 
-// ─── QUESTION DATA ───────────────────────────────────────────
+// ─── PASSWORD MODAL ───────────────────────────────────────────
+function checkAdminPassword() {
+  if (adminUnlocked) { openDashboard(); return; }
+  document.getElementById('pw-modal').classList.add('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  setTimeout(() => document.getElementById('pw-input').focus(), 100);
+}
+
+function submitPassword() {
+  const val = document.getElementById('pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    adminUnlocked = true;
+    closePwModal();
+    openDashboard();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function closePwModal() {
+  document.getElementById('pw-modal').classList.remove('open');
+}
+
+// ─── SUPABASE HELPERS ─────────────────────────────────────────
+const sbHeaders = () => ({
+  'Content-Type': 'application/json',
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+});
+
+async function sbInsert(row) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + TABLE_NAME, {
+    method: 'POST',
+    headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  if (!res.ok) throw new Error('Insert failed: ' + res.status + ' ' + await res.text());
+}
+
+async function sbFetchAll() {
+  const res = await fetch(
+    SUPABASE_URL + '/rest/v1/' + TABLE_NAME + '?select=*&order=created_at.asc',
+    { headers: sbHeaders() }
+  );
+  if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+  const rows = await res.json();
+  return rows.map(r => ({ timestamp: r.ts, ...r.data }));
+}
+
+async function sbCount() {
+  const res = await fetch(
+    SUPABASE_URL + '/rest/v1/' + TABLE_NAME + '?select=id',
+    { headers: { ...sbHeaders(), 'Prefer': 'count=exact' } }
+  );
+  if (!res.ok) return '?';
+  const range = res.headers.get('content-range');
+  return range ? range.split('/')[1] : '?';
+}
+
+// ─── QUESTION DATA ────────────────────────────────────────────
 const EQ_QUESTIONS = [
   { id:'eq1', num:7,  en:'The overall organization of Riyadh Season events is highly professional.', ar:'التنظيم العام لفعاليات موسم الرياض احترافي للغاية.' },
   { id:'eq2', num:8,  en:'The variety of activities offered is diverse and engaging.', ar:'تشكيلة الأنشطة المقدمة متنوعة وجذابة.' },
@@ -535,44 +639,7 @@ const LIKERT_LABELS = {
 let currentLang = 'en';
 const responses = {};
 
-// ─── SUPABASE API HELPERS ────────────────────────────────────
-const sbHeaders = () => ({
-  'Content-Type': 'application/json',
-  'apikey': eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzaWd6Z3JwZG5scWhrd3prZXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTAyNDYsImV4cCI6MjA5MjUyNjI0Nn0.za7i0DhkN5gh5WcAjkelWCSOHn026m-L_YCwzMO8rCk,
-  'Authorization': `Bearer ${eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzaWd6Z3JwZG5scWhrd3prZXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTAyNDYsImV4cCI6MjA5MjUyNjI0Nn0.za7i0DhkN5gh5WcAjkelWCSOHn026m-L_YCwzMO8rCk}`
-});
-
-async function sbInsert(row) {
-  const res = await fetch(`${https://ssigzgrpdnlqhkwzkesl.supabase.co/rest/v1/}/rest/v1/${TABLE_NAME}`, {
-    method: 'POST',
-    headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
-    body: JSON.stringify(row)
-  });
-  if (!res.ok) throw new Error(`Insert failed: ${res.status} ${await res.text()}`);
-}
-
-async function sbFetchAll() {
-  const res = await fetch(
-    `${https://ssigzgrpdnlqhkwzkesl.supabase.co/rest/v1/}/rest/v1/${TABLE_NAME}?select=*&order=created_at.asc`,
-    { headers: sbHeaders() }
-  );
-  if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-  const rows = await res.json();
-  // Flatten: merge top-level fields + data jsonb
-  return rows.map(r => ({ timestamp: r.ts, ...r.data }));
-}
-
-async function sbCount() {
-  const res = await fetch(
-    `${https://ssigzgrpdnlqhkwzkesl.supabase.co/rest/v1/}/rest/v1/${TABLE_NAME}?select=id`,
-    { headers: { ...sbHeaders(), 'Prefer': 'count=exact' } }
-  );
-  if (!res.ok) return '?';
-  const range = res.headers.get('content-range'); // e.g. "0-99/100"
-  return range ? range.split('/')[1] : '?';
-}
-
-// ─── UI BUILDERS ─────────────────────────────────────────────
+// ─── UI BUILDERS ──────────────────────────────────────────────
 function buildLikertBlock(q) {
   let btns = '';
   for (let v = 1; v <= 5; v++) {
@@ -595,7 +662,7 @@ function buildAll() {
   document.getElementById('dl-questions').innerHTML = DL_QUESTIONS.map(buildLikertBlock).join('');
 }
 
-// ─── INTERACTION ──────────────────────────────────────────────
+// ─── INTERACTIONS ─────────────────────────────────────────────
 function selectLikert(btn, qid, val) {
   document.querySelectorAll(`.likert-btn[data-qid="${qid}"]`).forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -681,11 +748,6 @@ async function submitSurvey() {
     return;
   }
 
-  if (!configOK) {
-    alert('⚠️ Supabase is not configured. Please update SUPABASE_URL and SUPABASE_ANON_KEY in the HTML file.');
-    return;
-  }
-
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = currentLang === 'ar' ? 'جارٍ الإرسال…' : 'Submitting…';
@@ -720,7 +782,6 @@ function resetForm() {
 
 // ─── COUNTER BADGE ────────────────────────────────────────────
 async function updateCounterBadge() {
-  if (!configOK) { document.getElementById('response-count-badge').textContent = '⚙️'; return; }
   try {
     const count = await sbCount();
     document.getElementById('response-count-badge').textContent = count;
@@ -735,16 +796,6 @@ async function openDashboard() {
   document.getElementById('dash-count').textContent = '…';
   document.getElementById('stats-grid').innerHTML = '<div class="db-loading col-span-2">Loading from database…</div>';
   document.getElementById('recent-responses').innerHTML = '';
-
-  if (!configOK) {
-    document.getElementById('dash-count').textContent = '⚙️';
-    document.getElementById('stats-grid').innerHTML = `
-      <div class="db-error col-span-2">
-        ⚙️ Supabase not configured. Edit the HTML file and replace<br>
-        <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>.
-      </div>`;
-    return;
-  }
 
   try {
     const all = await sbFetchAll();
@@ -814,7 +865,6 @@ document.getElementById('dashboard').addEventListener('click', function(e){ if(e
 
 // ─── EXPORT ───────────────────────────────────────────────────
 async function exportToExcel() {
-  if (!configOK) { alert('Supabase not configured.'); return; }
   const exportBtn = document.getElementById('export-btn');
   exportBtn.textContent = '⏳ Loading…';
   exportBtn.disabled = true;
@@ -870,9 +920,8 @@ async function exportToExcel() {
 // ─── CLEAR ────────────────────────────────────────────────────
 async function clearResponses() {
   if (!confirm('Are you sure you want to delete ALL responses from the database? This cannot be undone.')) return;
-  if (!configOK) return;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=gte.0`, {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + TABLE_NAME + '?id=gte.0', {
       method: 'DELETE',
       headers: sbHeaders()
     });
@@ -886,9 +935,6 @@ async function clearResponses() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
-if (!configOK) {
-  document.getElementById('config-notice').classList.add('show');
-}
 buildAll();
 updateCounterBadge();
 </script>
